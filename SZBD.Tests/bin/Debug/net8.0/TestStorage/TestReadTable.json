@@ -1,0 +1,38 @@
+[
+  {
+    "TableName": "TestReadTable",
+    "Columns": [
+      {
+        "Name": "Id",
+        "Type": "int",
+        "PrimaryKey": true,
+        "Unique": true
+      },
+      {
+        "Name": "First_Name",
+        "Type": "string",
+        "PrimaryKey": false,
+        "Unique": false
+      },
+      {
+        "Name": "Last_Name",
+        "Type": "string",
+        "PrimaryKey": false,
+        "Unique": false
+      },
+      {
+        "Name": "Username",
+        "Type": "string",
+        "PrimaryKey": false,
+        "Unique": true
+      }
+    ],
+    "Data": []
+  },
+  {
+    "Id": 1,
+    "First_Name": "Ichigo",
+    "Last_Name": "Kurosaki",
+    "Username": "Bankai"
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "TableName": "TestTable",
+  "Columns": [
+    {
+      "Name": "Id",
+      "Type": "int",
+      "PrimaryKey": true,
+      "Unique": true
+    },
+    {
+      "Name": "First_Name",
+      "Type": "string",
+      "PrimaryKey": false,
+      "Unique": false
+    },
+    {
+      "Name": "Last_Name",
+      "Type": "string",
+      "PrimaryKey": false,
+      "Unique": false
+    },
+    {
+      "Name": "Username",
+      "Type": "string",
+      "PrimaryKey": false,
+      "Unique": true
+    }
+  ],
+  "Data": []
+}

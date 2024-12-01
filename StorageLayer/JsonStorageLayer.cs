@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace StorageLayer
 {
@@ -38,32 +40,36 @@ namespace StorageLayer
 
         public void Insert(string tableName, object row){
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
-            string jsonRow = CreateJsonObject(row);
+            string stringRow = CreateJsonObject(row);
+            Console.WriteLine("Serialized JSON: " + stringRow);
+            JObject jsonRow = JsonConvert.DeserializeObject<JObject>(stringRow);
 
-            var tableData = ReadDataFromFile(filePath);
-            tableData["Data"].Add(jsonRow);  
+            JArray tableData = ReadDataFromFile(filePath);
+            tableData.Add(jsonRow);  
             WriteDataToFile(filePath, tableData);
         }
 
-        public object Read(string tableName, int id){
+        public JObject Read(string tableName, int id){
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
 
-            var tableData = ReadDataFromFile(filePath);
+            JArray tableData = ReadDataFromFile(filePath);
 
-            if(id >= 0 && id < tableData["Data"].Count){
-                return tableData["Data"][id];
+            if(id >= 0 && id < tableData.Count){
+                 JObject item =  (JObject)tableData[id];
+                 return item;
             }
             else
-                return new { Data = new List<object>() };
+                return new JObject();
         }
 
         public void Update(string tableName, int id, object newRow){
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
-            string jsonNewRow = CreateJsonObject(newRow);
+            string stringNewRow = CreateJsonObject(newRow);
+            JObject jsonNewRow = JsonConvert.DeserializeObject<JObject>(stringNewRow);
 
-            var tableData = ReadDataFromFile(filePath);
-            if(id >= 0 && tableData["Data"].Count){
-                tableData["Data"][id] = jsonNewRow;
+            JArray tableData = ReadDataFromFile(filePath);
+            if(id >= 0 && id < tableData.Count){
+                tableData[id] = jsonNewRow;
                 WriteDataToFile(filePath, tableData);
             }
             else{
@@ -74,36 +80,44 @@ namespace StorageLayer
         public void Delete(string tableName, int id){
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
 
-            var tableData = ReadDataFromFile(filePath);
-            if(id >= 0 && id < tableData["Data"].Count){
-                tableData["Data"].RemoveAt(id);
+            JArray tableData = ReadDataFromFile(filePath);
+            if(id >= 0 && id < tableData.Count){
+                tableData.RemoveAt(id);
                 WriteDataToFile(filePath, tableData);
             }
         }
 
         public string CreateJsonObject(object row){
-            return JsonConvert.SerializeObject(row, Formatting.Indented);  
+             if (row == null){
+                throw new ArgumentNullException(nameof(row), "Row object cannot be null.");
+            }
+            return JsonConvert.SerializeObject(row);  
         }
 
-        private dynamic ReadDataFromFile(string filePath){
-            if(File.Exists(filePath)){
+        private JArray ReadDataFromFile(string filePath){
+            if (File.Exists(filePath)){
                 var jsonData = File.ReadAllText(filePath);
 
-                if(string.IsNullOrEmpty(jsonData)){
-                    return new { Data = new List<object>() };
+                if (string.IsNullOrEmpty(jsonData)){
+                    return new JArray();  
                 }
 
-                try{
-                    var deserializedData = JsonConvert.DeserializeObject<dynamic>(jsonData);
+                try{           
+                    var deserializedData = JsonConvert.DeserializeObject<JToken>(jsonData);
 
-                    if(deserializedData != null){
-                        return deserializedData;
+                    if (deserializedData != null){
+                        if (deserializedData is JArray dataArray){
+                            return dataArray;
+                        }
+                        else{
+                            return  new JArray(deserializedData);
+                        }
                     }
                     else{
-                        return new { Data = new List<object>() };
-                    }                
+                        return new JArray();
+                    }
                 }
-                catch(JsonException ex){
+                catch (JsonException ex){
                     throw new InvalidOperationException("Error deserializing the JSON file.", ex);
                 }
             }

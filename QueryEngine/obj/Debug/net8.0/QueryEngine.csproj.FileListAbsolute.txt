@@ -1,0 +1,16 @@
+F:\SZBD\QueryEngine\bin\Debug\net8.0\QueryEngine.deps.json
+F:\SZBD\QueryEngine\bin\Debug\net8.0\QueryEngine.dll
+F:\SZBD\QueryEngine\bin\Debug\net8.0\QueryEngine.pdb
+F:\SZBD\QueryEngine\bin\Debug\net8.0\StorageLayer.dll
+F:\SZBD\QueryEngine\bin\Debug\net8.0\StorageLayer.pdb
+F:\SZBD\QueryEngine\obj\Debug\net8.0\QueryEngine.csproj.AssemblyReference.cache
+F:\SZBD\QueryEngine\obj\Debug\net8.0\QueryEngine.GeneratedMSBuildEditorConfig.editorconfig
+F:\SZBD\QueryEngine\obj\Debug\net8.0\QueryEngine.AssemblyInfoInputs.cache
+F:\SZBD\QueryEngine\obj\Debug\net8.0\QueryEngine.AssemblyInfo.cs
+F:\SZBD\QueryEngine\obj\Debug\net8.0\QueryEngine.csproj.CoreCompileInputs.cache
+F:\SZBD\QueryEngine\obj\Debug\net8.0\QueryEngine.sourcelink.json
+F:\SZBD\QueryEngine\obj\Debug\net8.0\QueryEng.0A2EB579.Up2Date
+F:\SZBD\QueryEngine\obj\Debug\net8.0\QueryEngine.dll
+F:\SZBD\QueryEngine\obj\Debug\net8.0\refint\QueryEngine.dll
+F:\SZBD\QueryEngine\obj\Debug\net8.0\QueryEngine.pdb
+F:\SZBD\QueryEngine\obj\Debug\net8.0\ref\QueryEngine.dll

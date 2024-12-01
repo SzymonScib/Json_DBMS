@@ -1,0 +1,13 @@
+F:\SZBD\StorageLayer\bin\Debug\net8.0\StorageLayer.deps.json
+F:\SZBD\StorageLayer\bin\Debug\net8.0\StorageLayer.dll
+F:\SZBD\StorageLayer\bin\Debug\net8.0\StorageLayer.pdb
+F:\SZBD\StorageLayer\obj\Debug\net8.0\StorageLayer.csproj.AssemblyReference.cache
+F:\SZBD\StorageLayer\obj\Debug\net8.0\StorageLayer.GeneratedMSBuildEditorConfig.editorconfig
+F:\SZBD\StorageLayer\obj\Debug\net8.0\StorageLayer.AssemblyInfoInputs.cache
+F:\SZBD\StorageLayer\obj\Debug\net8.0\StorageLayer.AssemblyInfo.cs
+F:\SZBD\StorageLayer\obj\Debug\net8.0\StorageLayer.csproj.CoreCompileInputs.cache
+F:\SZBD\StorageLayer\obj\Debug\net8.0\StorageLayer.sourcelink.json
+F:\SZBD\StorageLayer\obj\Debug\net8.0\StorageLayer.dll
+F:\SZBD\StorageLayer\obj\Debug\net8.0\refint\StorageLayer.dll
+F:\SZBD\StorageLayer\obj\Debug\net8.0\StorageLayer.pdb
+F:\SZBD\StorageLayer\obj\Debug\net8.0\ref\StorageLayer.dll
