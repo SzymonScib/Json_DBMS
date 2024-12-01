@@ -41,7 +41,6 @@ namespace StorageLayer
         public void Insert(string tableName, object row){
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
             string stringRow = CreateJsonObject(row);
-            Console.WriteLine("Serialized JSON: " + stringRow);
             JObject jsonRow = JsonConvert.DeserializeObject<JObject>(stringRow);
 
             JArray tableData = ReadDataFromFile(filePath);
@@ -101,7 +100,6 @@ namespace StorageLayer
                 if (string.IsNullOrEmpty(jsonData)){
                     return new JArray();  
                 }
-
                 try{           
                     var deserializedData = JsonConvert.DeserializeObject<JToken>(jsonData);
 
