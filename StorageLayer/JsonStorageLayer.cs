@@ -40,18 +40,18 @@ namespace StorageLayer
 
         public void Insert(string tableName, object row){
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
-            string stringRow = CreateJsonObject(row);
+            string stringRow = Utils.CreateJsonObject(row);
             JObject jsonRow = JsonConvert.DeserializeObject<JObject>(stringRow);
 
-            JArray tableData = ReadDataFromFile(filePath);
+            JArray tableData = Utils.ReadDataFromFile(filePath);
             tableData.Add(jsonRow);  
-            WriteDataToFile(filePath, tableData);
+            Utils.WriteDataToFile(filePath, tableData);
         }
 
         public JObject Read(string tableName, int id){
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
 
-            JArray tableData = ReadDataFromFile(filePath);
+            JArray tableData = Utils.ReadDataFromFile(filePath);
 
             if(id >= 0 && id < tableData.Count){
                  JObject item =  (JObject)tableData[id];
@@ -63,7 +63,7 @@ namespace StorageLayer
 
         public JArray ReadAll(string tableName){
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
-            return ReadDataFromFile(filePath);
+            return Utils.ReadDataFromFile(filePath);
         }
 
         public IEnumerable<JObject> Query(string tableName, Func<JObject, bool> predicate){
@@ -75,13 +75,13 @@ namespace StorageLayer
 
         public void Update(string tableName, int id, object newRow){
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
-            string stringNewRow = CreateJsonObject(newRow);
+            string stringNewRow = Utils.CreateJsonObject(newRow);
             JObject jsonNewRow = JsonConvert.DeserializeObject<JObject>(stringNewRow);
 
-            JArray tableData = ReadDataFromFile(filePath);
+            JArray tableData = Utils.ReadDataFromFile(filePath);
             if(id >= 0 && id < tableData.Count){
                 tableData[id] = jsonNewRow;
-                WriteDataToFile(filePath, tableData);
+                Utils.WriteDataToFile(filePath, tableData);
             }
             else{
                 throw new ArgumentOutOfRangeException("Wrong idex, use integers only");
@@ -91,54 +91,11 @@ namespace StorageLayer
         public void Delete(string tableName, int id){
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
 
-            JArray tableData = ReadDataFromFile(filePath);
+            JArray tableData = Utils.ReadDataFromFile(filePath);
             if(id >= 0 && id < tableData.Count){
                 tableData.RemoveAt(id);
-                WriteDataToFile(filePath, tableData);
+                Utils.WriteDataToFile(filePath, tableData);                
             }
-        }
-
-        public string CreateJsonObject(object row){
-             if (row == null){
-                throw new ArgumentNullException(nameof(row), "Row object cannot be null.");
-            }
-            return JsonConvert.SerializeObject(row);  
-        }
-
-        private JArray ReadDataFromFile(string filePath){
-            if (File.Exists(filePath)){
-                var jsonData = File.ReadAllText(filePath);
-
-                if (string.IsNullOrEmpty(jsonData)){
-                    return new JArray();  
-                }
-                try{           
-                    var deserializedData = JsonConvert.DeserializeObject<JToken>(jsonData);
-
-                    if (deserializedData != null){
-                        if (deserializedData is JArray dataArray){
-                            return dataArray;
-                        }
-                        else{
-                            return  new JArray(deserializedData);
-                        }
-                    }
-                    else{
-                        return new JArray();
-                    }
-                }
-                catch (JsonException ex){
-                    throw new InvalidOperationException("Error deserializing the JSON file.", ex);
-                }
-            }
-            else{
-                throw new FileNotFoundException($"{filePath} not found");
-            }
-       }
-
-        private void WriteDataToFile(string filePath, dynamic data){
-            var jsonData = JsonConvert.SerializeObject(data, Formatting.Indented);
-            File.WriteAllText(filePath, jsonData);
-        }
+        }       
     }
 }
