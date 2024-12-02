@@ -5,25 +5,29 @@
       "Name": "Id",
       "Type": "int",
       "PrimaryKey": true,
-      "Unique": true
+      "Unique": true,
+      "AllowNull": false
     },
     {
       "Name": "First_Name",
       "Type": "string",
       "PrimaryKey": false,
-      "Unique": false
+      "Unique": false,
+      "AllowNull": false
     },
     {
       "Name": "Last_Name",
       "Type": "string",
       "PrimaryKey": false,
-      "Unique": false
+      "Unique": false,
+      "AllowNull": false
     },
     {
       "Name": "Username",
       "Type": "string",
       "PrimaryKey": false,
-      "Unique": true
+      "Unique": true,
+      "AllowNull": false
     }
   ],
   "Data": []

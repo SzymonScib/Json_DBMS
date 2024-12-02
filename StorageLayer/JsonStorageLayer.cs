@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,8 +26,8 @@ namespace StorageLayer
         public void CreateTable(string tableName, List<Column> columns){
             var tableDefinition = new{
                 TableName = tableName,
-                Columns = columns,
-                Data = new List<object>()
+                Columns = JArray.FromObject(columns),
+                Data = new JArray()
             };
 
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
@@ -44,6 +46,9 @@ namespace StorageLayer
             JObject jsonRow = JsonConvert.DeserializeObject<JObject>(stringRow);
 
             JArray tableData = Utils.ReadDataFromFile(filePath);
+            
+            Utils.ValidateRow(tableName, jsonRow, filePath);
+
             tableData.Add(jsonRow);  
             Utils.WriteDataToFile(filePath, tableData);
         }
@@ -68,9 +73,8 @@ namespace StorageLayer
 
         public IEnumerable<JObject> Query(string tableName, Func<JObject, bool> predicate){
             JArray tableData = ReadAll(tableName);
-            return tableData
-            .OfType<JObject>() 
-            .Where(predicate);
+            var results =  tableData.OfType<JObject>().Where(predicate);
+            return results;
         }
 
         public void Update(string tableName, int id, object newRow){
@@ -97,5 +101,7 @@ namespace StorageLayer
                 Utils.WriteDataToFile(filePath, tableData);                
             }
         }       
+
+        
     }
 }

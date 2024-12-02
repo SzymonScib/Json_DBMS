@@ -109,9 +109,9 @@ public class JsonStorageLayerTests
     [Fact]
      public void QueryNoMatchTest(){
         var storageLayer = new JsonStorageLayer(_testStoragePath);
-        MakeTestTable("TestQuryNoMatch");
+        MakeTestTable("TestQueryNoMatch");
 
-        var results = storageLayer.Query("TestQueryNoMatchTable", row => (string)row["First_Name"] == "Chad");
+        var results = storageLayer.Query("TestQueryNoMatch", row => (string)row["First_Name"] == "Chad");
  
         Assert.Empty(results);  
     }
