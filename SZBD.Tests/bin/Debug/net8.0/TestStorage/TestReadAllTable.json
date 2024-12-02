@@ -1,6 +1,6 @@
 [
   {
-    "TableName": "TestUpdateTable",
+    "TableName": "TestReadAllTable",
     "Columns": [
       {
         "Name": "Id",
@@ -31,9 +31,9 @@
   },
   {
     "Id": 1,
-    "First_Name": "Jushiro",
-    "Last_Name": "Ukitake",
-    "Username": "RightHand123"
+    "First_Name": "Kisuke",
+    "Last_Name": "Urahara",
+    "Username": "Ilikepizza"
   },
   {
     "Id": 2,

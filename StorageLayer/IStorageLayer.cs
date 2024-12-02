@@ -12,6 +12,7 @@ namespace StorageLayer
         void CreateTable(string tableName ,List<Column> columns);
         void Insert(string tableName, object row);
         JObject Read(string tableName, int id);
+        JArray ReadAll(string tableName);
         void Update(string tableName, int id, object newRow);
         void Delete(string tableName, int id);
     }

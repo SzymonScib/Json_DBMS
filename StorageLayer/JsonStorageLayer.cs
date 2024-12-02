@@ -61,6 +61,18 @@ namespace StorageLayer
                 return new JObject();
         }
 
+        public JArray ReadAll(string tableName){
+            string filePath = Path.Combine(_storagePath, $"{tableName}.json");
+            return ReadDataFromFile(filePath);
+        }
+
+        public IEnumerable<JObject> Query(string tableName, Func<JObject, bool> predicate){
+            JArray tableData = ReadAll(tableName);
+            return tableData
+            .OfType<JObject>() 
+            .Where(predicate);
+        }
+
         public void Update(string tableName, int id, object newRow){
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
             string stringNewRow = CreateJsonObject(newRow);

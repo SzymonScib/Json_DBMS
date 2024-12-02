@@ -1,6 +1,6 @@
 [
   {
-    "TableName": "TestUpdateTable",
+    "TableName": "TestRadAllTable",
     "Columns": [
       {
         "Name": "Id",
@@ -31,15 +31,9 @@
   },
   {
     "Id": 1,
-    "First_Name": "Jushiro",
-    "Last_Name": "Ukitake",
-    "Username": "RightHand123"
-  },
-  {
-    "Id": 2,
-    "First_Name": "Yoruichi",
-    "Last_Name": "Shihoin",
-    "Username": "BlackCat"
+    "First_Name": "Kisuke",
+    "Last_Name": "Urahara",
+    "Username": "Ilikepizza"
   },
   {
     "Id": 3,
