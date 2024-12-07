@@ -1,0 +1,41 @@
+# Ignorowanie katalogów bin i obj
+bin/
+obj/
+
+# Ignorowanie plików tymczasowych Visual Studio
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignorowanie plików systemowych
+.DS_Store
+Thumbs.db
+
+# Ignorowanie katalogu konfiguracji programu
+.vscode/
+.idea/
+
+# Ignorowanie plików logów
+*.log
+
+# Ignorowanie plików tymczasowych
+*.tmp
+*.temp
+*.cache
+
+# Ignorowanie buildów
+*.exe
+*.dll
+*.pdb
+*.mdb
+
+# Ignorowanie folderów testowych wynikowych
+TestResults/
+
+# Ignorowanie zależności instalowanych lokalnie
+packages/
+node_modules/
+
+# Ignorowanie plików publikacji
+publish/
