@@ -21,16 +21,16 @@ namespace StorageLayer.Indexes
         }
 
         public void InsertNotNull(int key){
-            int i = Keys.Count - 1;
+            int i = Keys.Count - 1; 
             //Insertion into a non-full node
-            if(IsLeaf){
+            if(IsLeaf){  
                 Keys.Add(0);
                 //Find the location of the new key to be inserted
-                while(i >= 0 && key < Keys[i]){
+                while(i >= 0 && key < Keys[i]){// true, 20<10 false
                     Keys[i + 1] = Keys[i];
                     i--;
                 }
-                Keys[i + 1] = key;
+                Keys[i + 1] = key; 
             }
             //Insertion into a non leaf node
             else{
@@ -73,16 +73,16 @@ namespace StorageLayer.Indexes
             y.Keys.RemoveAt(t - 1);
         }
 
-        public void Insert(int key){
+        public void Insert(int key){  //key = 10
             // If the root node is full, create a new root and split the old root
-            if(Keys.Count == 2 * Degree - 1){
-                BTreeNode s = new BTreeNode(false, Degree);
-                s.Children.Add(this);
-                SplitChild(0, s);
+            if(Keys.Count == 2 * Degree - 1){ 
+                BTreeNode s = new BTreeNode(false, Degree); 
+                s.Children.Add(this); 
+                s.SplitChild(0, this);
                 s.InsertNotNull(key);
             }
             else{
-                InsertNotNull(key);
+                InsertNotNull(key); 
             }
         }
 
