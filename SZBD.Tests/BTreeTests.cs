@@ -14,12 +14,12 @@ namespace SZBD.Tests
             int degree = 3;
             BTree btree = new BTree(degree);
 
-            btree.Insert(10);
-            btree.Insert(20);
-            btree.Insert(5);
-            btree.Insert(6);
-            btree.Insert(12);
-            btree.Insert(30);
+            btree.Insert(10);//
+            btree.Insert(20);//
+            btree.Insert(5);//
+            btree.Insert(6);//
+            btree.Insert(12);//
+            btree.Insert(30);//
             btree.Insert(7);
             btree.Insert(17);
             btree.Insert(19);

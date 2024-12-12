@@ -20,17 +20,17 @@ namespace StorageLayer.Indexes
             Degree = degree;
         }
 
-        public void InsertNotFull(int key){
-            int i = Keys.Count - 1; 
+        public void InsertNotFull(int key){//key = 6
+            int i = Keys.Count - 1; //i = 2
 
             if(IsLeaf){  
                 Keys.Add(0); 
 
-                while(i >= 0 && key < Keys[i]){ 
+                while(i >= 0 && key < Keys[i]){ //true
                     Keys[i + 1] = Keys[i]; 
                     i--; 
                 }
-                Keys[i + 1] = key; 
+                Keys[i + 1] = key; //Keys = [5, 6, 10, 12, 20]
             }
             else{
                 while(i >= 0 && key < Keys[i]){
@@ -49,20 +49,21 @@ namespace StorageLayer.Indexes
             }
         }
 
-        public void SplitChild(int i, BTreeNode y){
-            int t = y.Degree; 
-            BTreeNode z = new BTreeNode(y.IsLeaf, t); 
+        public void SplitChild(int i, BTreeNode y){//i = 0, y = [5, 6, 10, 12, 20]
+            int t = y.Degree; //t = 3
+            BTreeNode z = new BTreeNode(y.IsLeaf, t); //z = []
 
-            z.Keys.AddRange(y.Keys.GetRange(t,  t - 1)); 
+            z.Keys.AddRange(y.Keys.GetRange(t,  t - 1)); //z = [12, 20]
+            y.Keys.RemoveRange(t, t - 1); //y = [5, 6, 10]
 
             if(!y.IsLeaf){
-                z.Children.AddRange(y.Children.GetRange(t, t));
+                z.Children.AddRange(y.Children.GetRange(t, t)); 
                 y.Children.RemoveRange(t, t);
             }
 
             Children.Insert(i + 1, z);
 
-            Keys.Insert(i, y.Keys[t - 1]);
+            Keys.Insert(i, y.Keys[t - 1]); //new root = [10]
         }
 
         public BTreeNode? Search(int key){

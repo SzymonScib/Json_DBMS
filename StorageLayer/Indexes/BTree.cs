@@ -17,14 +17,14 @@ namespace StorageLayer.Indexes
         }
 
         public void Insert(int key){
-            if (Root.Keys.Count == 2 * Degree - 1)
+            if (Root.Keys.Count == 2 * Degree - 1) // 5 = 5 true
             {
                 BTreeNode newRoot = new BTreeNode(false, Degree);
                 newRoot.Children.Add(Root);
-                newRoot.SplitChild(0, Root);
+                newRoot.SplitChild(0, Root); // root = [5, 6, 10, 12, 20]
                 Root = newRoot;
             }
-            Root.InsertNotFull(key);
+            Root.InsertNotFull(key);//key = 12
         }
 
         public BTreeNode? Search(int key){
