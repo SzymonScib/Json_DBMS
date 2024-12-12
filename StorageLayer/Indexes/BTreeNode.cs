@@ -20,17 +20,17 @@ namespace StorageLayer.Indexes
             Degree = degree;
         }
 
-        public void InsertNotNull(int key){
-            int i = Keys.Count - 1; 
-            //Insertion into a non-full node
+        public void InsertNotFull(int key){//key = 6
+            int i = Keys.Count - 1; //i = 3
+
             if(IsLeaf){  
-                Keys.Add(0);
-                //Find the location of the new key to be inserted
-                while(i >= 0 && key < Keys[i]){// true, 20<10 false
-                    Keys[i + 1] = Keys[i];
-                    i--;
+                Keys.Add(0); //Keys = [5, 6, 10, 20, 0]
+
+                while(i >= 0 && key < Keys[i]){//true i true 
+                    Keys[i + 1] = Keys[i]; 
+                    i--; 
                 }
-                Keys[i + 1] = key; 
+                Keys[i + 1] = key; //Keys = [2, 5, 6, 10, 20]
             }
             //Insertion into a non leaf node
             else{
@@ -48,17 +48,17 @@ namespace StorageLayer.Indexes
                         i++;
                     }
                 }
-                Children[i].InsertNotNull(key);
+                Children[i].InsertNotFull(key);
             }
         }
 
         public void SplitChild(int i, BTreeNode y){
-            int t = y.Degree;
-            BTreeNode z = new BTreeNode(y.IsLeaf, t);
+            int t = y.Degree; //t = 3
+            BTreeNode z = new BTreeNode(y.IsLeaf, t); //z.Degree = 3, z.IsLeaf = true z.Keys = [], z.Children = []
 
             //Move second half of y's keys to z
-            z.Keys.AddRange(y.Keys.GetRange(t,  t - 1));
-            y.Keys.RemoveRange(t, t - 1);
+            z.Keys.AddRange(y.Keys.GetRange(t,  t - 1)); //z.Keys = [10, 20]
+            y.Keys.RemoveRange(t, t - 1); //y.Keys = [2, 5, 6]
 
             //Move second half of y's children to z if y is not a leaf
             if(!y.IsLeaf){
@@ -69,21 +69,7 @@ namespace StorageLayer.Indexes
             Children.Insert(i + 1, z);
 
             //Move the middle key of y to this node
-            Keys.Insert(i, y.Keys[t - 1]);
-            y.Keys.RemoveAt(t - 1);
-        }
-
-        public void Insert(int key){  //key = 10
-            // If the root node is full, create a new root and split the old root
-            if(Keys.Count == 2 * Degree - 1){ 
-                BTreeNode s = new BTreeNode(false, Degree); 
-                s.Children.Add(this); 
-                s.SplitChild(0, this);
-                s.InsertNotNull(key);
-            }
-            else{
-                InsertNotNull(key); 
-            }
+            Keys.Insert(i, y.Keys[t - 1]); //this.Keys = [6]
         }
 
         public BTreeNode? Search(int key){

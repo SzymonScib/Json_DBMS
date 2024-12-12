@@ -7,7 +7,7 @@ namespace StorageLayer.Indexes
 {
     public class BTree
     {
-        private BTreeNode Root {get;set;}
+        public BTreeNode Root {get;set;}
         private int Degree {get;set;}
 
         public BTree(int degree)
@@ -24,7 +24,7 @@ namespace StorageLayer.Indexes
                 newRoot.SplitChild(0, Root);
                 Root = newRoot;
             }
-            Root.InsertNotNull(key);
+            Root.InsertNotFull(key);
         }
 
         public BTreeNode? Search(int key){
