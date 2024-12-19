@@ -79,10 +79,10 @@ namespace SZBD.Tests
             btree.Insert(25);
             btree.Insert(28);
 
-            btree.Delete(1);//
+            btree.Delete(1);
             Assert.Null(btree.Search(1));
 
-            btree.Delete(10);//
+            btree.Delete(10);
             Assert.Null(btree.Search(10));
 
             btree.Delete(14);
@@ -91,20 +91,23 @@ namespace SZBD.Tests
             btree.Delete(6);
             Assert.Null(btree.Search(6));
 
-            Assert.Equal(8, btree.Root.Keys[0]);
-            Assert.Equal(19, btree.Root.Keys[1]);
+            Assert.Equal(5, btree.Root.Keys[0]);
+            Assert.Equal(8, btree.Root.Keys[1]);
+            Assert.Equal(13, btree.Root.Keys[2]);
+            Assert.Equal(19, btree.Root.Keys[3]);
             Assert.Equal(2, btree.Root.Children[0].Keys[0]);
             Assert.Equal(5, btree.Root.Children[0].Keys[1]);
-            Assert.Equal(7, btree.Root.Children[0].Keys[2]);
-            Assert.Equal(11, btree.Root.Children[1].Keys[0]);
-            Assert.Equal(12, btree.Root.Children[1].Keys[1]);
-            Assert.Equal(13, btree.Root.Children[1].Keys[2]);
-            Assert.Equal(17, btree.Root.Children[1].Keys[3]);
-            Assert.Equal(20, btree.Root.Children[2].Keys[0]);
-            Assert.Equal(25, btree.Root.Children[2].Keys[1]);
-            Assert.Equal(28, btree.Root.Children[2].Keys[2]);
-            Assert.Equal(30, btree.Root.Children[2].Keys[3]);
-            Assert.Equal(32, btree.Root.Children[2].Keys[4]);
+            Assert.Equal(7, btree.Root.Children[1].Keys[0]);
+            Assert.Equal(8, btree.Root.Children[1].Keys[1]);
+            Assert.Equal(11, btree.Root.Children[2].Keys[0]);
+            Assert.Equal(12, btree.Root.Children[2].Keys[1]);
+            Assert.Equal(17, btree.Root.Children[3].Keys[0]);
+            Assert.Equal(19, btree.Root.Children[3].Keys[1]);
+            Assert.Equal(20, btree.Root.Children[4].Keys[0]);
+            Assert.Equal(25, btree.Root.Children[4].Keys[1]);
+            Assert.Equal(28, btree.Root.Children[4].Keys[2]);
+            Assert.Equal(30, btree.Root.Children[4].Keys[3]);
+            Assert.Equal(32, btree.Root.Children[4].Keys[4]);
         }
     }
 }

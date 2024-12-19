@@ -20,17 +20,17 @@ namespace StorageLayer.Indexes
             Degree = degree;
         }
 
-        public void InsertNotFull(int key){//key = 6
-            int i = Keys.Count - 1; //i = 2
+        public void InsertNotFull(int key){
+            int i = Keys.Count - 1;
 
             if(IsLeaf){  
                 Keys.Add(0); 
 
-                while(i >= 0 && key < Keys[i]){ //true
+                while(i >= 0 && key < Keys[i]){
                     Keys[i + 1] = Keys[i]; 
                     i--; 
                 }
-                Keys[i + 1] = key; //Keys = [5, 6, 10, 12, 20]
+                Keys[i + 1] = key;
             }
             else{
                 while(i >= 0 && key < Keys[i]){
@@ -80,9 +80,9 @@ namespace StorageLayer.Indexes
             return Children[i].Search(key);
         }
 
-        public void Delete(int key){//10
-            int idx = FindKey(key);//3
-            if(idx < Keys.Count && Keys[idx] == key){//3 < 3 && 10 == 10 false
+        public void Delete(int key){
+            int idx = FindKey(key);
+            if(idx < Keys.Count && Keys[idx] == key){
                 if(IsLeaf){
                     RemoveFromLeaf(idx);
                 }
@@ -90,8 +90,8 @@ namespace StorageLayer.Indexes
                     RemoveFromNonLeaf(idx);
                 }
             }
-            else{//true
-                if(IsLeaf){//true                
+            else{
+                if(IsLeaf){                
                     if(Keys.Count <= Degree){
                         RemoveFromLeaf(idx);
                         Fill(idx);
@@ -115,7 +115,6 @@ namespace StorageLayer.Indexes
             }
         }
         
-        //Search for an index of a key
         private int FindKey(int key){
             int idx = 0;
             while(idx < Keys.Count && Keys[idx] < key){
@@ -129,12 +128,13 @@ namespace StorageLayer.Indexes
         }
 
         private void RemoveFromNonLeaf(int idx){
-            int key = Keys[idx];//10
+            int key = Keys[idx];
 
-            if(Children[idx].Keys.Count >= Degree){//3 >= 3 true
-                int pred = GetPred(idx);//10
-                //Keys[idx] = pred;//10
-                Children[idx].Delete(pred);//10
+            if(Children[idx].Keys.Count >= Degree){
+                int pred = GetPred(idx);
+                Children[idx].Delete(pred);
+                pred = GetPred(idx);
+                Keys[idx] = pred;
             }
             else if(Children[idx + 1].Keys.Count >= Degree){
                 int succ = GetSucc(idx);
@@ -148,12 +148,12 @@ namespace StorageLayer.Indexes
 
         }
 
-        private int GetPred(int idx){//1
-            BTreeNode cur = Children[idx];//[8 7 10]
+        private int GetPred(int idx){
+            BTreeNode cur = Children[idx];
             while(!cur.IsLeaf){
                 cur = cur.Children[cur.Keys.Count];
             }
-            return cur.Keys[cur.Keys.Count - 1];//[10]
+            return cur.Keys[cur.Keys.Count - 1];
         }
 
         private int GetSucc(int idx){
@@ -215,7 +215,7 @@ namespace StorageLayer.Indexes
                 BorrowFromNext(idx);
             }
             else{
-                if(idx != Keys.Count){//idx != Keys.Count
+                if(idx != Keys.Count){
                     Merge(idx);
                 }
                 else{
