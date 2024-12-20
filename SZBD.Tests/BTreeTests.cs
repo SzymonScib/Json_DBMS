@@ -9,27 +9,7 @@ namespace SZBD.Tests
     public class BTreeTests{
         [Fact]
         public void TestInsert(){
-            int degree = 3;
-            BTree btree = new BTree(degree);
-
-            btree.Insert(10);
-            btree.Insert(20);
-            btree.Insert(5);
-            btree.Insert(6);
-            btree.Insert(12);
-            btree.Insert(30);
-            btree.Insert(7);
-            btree.Insert(17);
-            btree.Insert(19);
-            btree.Insert(11);
-            btree.Insert(2);
-            btree.Insert(8);
-            btree.Insert(1);
-            btree.Insert(14);
-            btree.Insert(32);
-            btree.Insert(13);
-            btree.Insert(25);
-            btree.Insert(28);
+            BTree btree = CreateBTree(3);
 
             Assert.Equal(6, btree.Root.Keys[0]);
             Assert.Equal(10, btree.Root.Keys[1]);
@@ -57,27 +37,7 @@ namespace SZBD.Tests
 
         [Fact]
         public void TestDelete(){
-            int degree = 3;
-            BTree btree = new BTree(degree);
-
-            btree.Insert(10);
-            btree.Insert(20);
-            btree.Insert(5);
-            btree.Insert(6);
-            btree.Insert(12);
-            btree.Insert(30);
-            btree.Insert(7);
-            btree.Insert(17);
-            btree.Insert(19);
-            btree.Insert(11);
-            btree.Insert(2);
-            btree.Insert(8);
-            btree.Insert(1);
-            btree.Insert(14);
-            btree.Insert(32);
-            btree.Insert(13);
-            btree.Insert(25);
-            btree.Insert(28);
+            BTree btree = CreateBTree(3);
 
             btree.Delete(1);
             Assert.Null(btree.Search(1));
@@ -112,27 +72,7 @@ namespace SZBD.Tests
 
         [Fact]
         private void TestDeleteFill(){
-            int degree = 3;
-            BTree btree = new BTree(degree);
-
-            btree.Insert(10);
-            btree.Insert(20);
-            btree.Insert(5);
-            btree.Insert(6);
-            btree.Insert(12);
-            btree.Insert(30);
-            btree.Insert(7);
-            btree.Insert(17);
-            btree.Insert(19);
-            btree.Insert(11);
-            btree.Insert(2);
-            btree.Insert(8);
-            btree.Insert(1);
-            btree.Insert(14);
-            btree.Insert(32);
-            btree.Insert(13);
-            btree.Insert(25);
-            btree.Insert(28);
+            BTree btree = CreateBTree(3);
 
             btree.Delete(1);
             Assert.Null(btree.Search(1));
@@ -166,6 +106,28 @@ namespace SZBD.Tests
             Assert.Equal(28, btree.Root.Children[4].Keys[2]);
             Assert.Equal(30, btree.Root.Children[4].Keys[3]);
             Assert.Equal(32, btree.Root.Children[4].Keys[4]);
+        }
+
+        [Fact]
+        private void RangeQuery_ReturnsCorrectKeys(){
+            int degree = 3;
+            BTree btree = new BTree(degree);
+
+            int[] keysToinsert = {10, 20, 5, 6, 12, 30, 7, 17, 19, 11, 2, 8, 1, 14, 32, 13, 25, 28};
+            foreach (var key in keysToinsert){
+                btree.Insert(key);
+            }
+        }
+
+        private BTree CreateBTree(int degree){
+            BTree btree = new BTree(degree);
+
+            int[] keysToinsert = {10, 20, 5, 6, 12, 30, 7, 17, 19, 11, 2, 8, 1, 14, 32, 13, 25, 28};
+            foreach (var key in keysToinsert){
+                btree.Insert(key);
+            }
+
+            return btree;
         }
     }
 }

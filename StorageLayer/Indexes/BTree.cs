@@ -25,11 +25,11 @@ namespace StorageLayer.Indexes
             Root.InsertNotFull(key);
         }
 
-        public void Delete(int key){//key = 7
+        public void Delete(int key){
             if (Root.Keys.Count == 0){
                 return;
             }
-            Root.Delete(key);//
+            Root.Delete(key);
             if (Root.Keys.Count == 0 && Root.Children.Count == 1){
                 Root = Root.Children[0];
             }
@@ -40,6 +40,33 @@ namespace StorageLayer.Indexes
                 return null;
             }
             return Root.Search(key);
+        }
+
+        public List<int> RangeQuery(int min, int max){
+            List<int> result = new List<int>();
+            RangeQueyHelper(Root, min, max, result);
+            return result;
+        }
+
+        public void RangeQueyHelper(BTreeNode node, int min, int max, List<int> result){
+            int i = 0;
+            while (i < node.Keys.Count && min > node.Keys[i]){
+                i++;
+            }
+            if (i < node.Keys.Count){
+                if (!node.IsLeaf){
+                    RangeQueyHelper(node.Children[i], min, max, result);
+                }
+                if (node.Keys[i] >= min && node.Keys[i] <= max){
+                    result.Add(node.Keys[i]);
+                }
+                i++;
+            }
+            if (i < node.Keys.Count){
+                if (!node.IsLeaf){
+                    RangeQueyHelper(node.Children[i], min, max, result);
+                }
+            }
         }
     }
 }
