@@ -25,11 +25,11 @@ namespace StorageLayer.Indexes
             Root.InsertNotFull(key);
         }
 
-        public void Delete(int key){//key = 10
-            if (Root.Keys.Count == 0){//4!=0
+        public void Delete(int key){//key = 7
+            if (Root.Keys.Count == 0){
                 return;
             }
-            Root.Delete(key);
+            Root.Delete(key);//
             if (Root.Keys.Count == 0 && Root.Children.Count == 1){
                 Root = Root.Children[0];
             }

@@ -81,8 +81,8 @@ namespace StorageLayer.Indexes
         }
 
         public void Delete(int key){
-            int idx = FindKey(key);
-            if(idx < Keys.Count && Keys[idx] == key){
+            int idx = FindKey(key);//1
+            if(idx < Keys.Count && Keys[idx] == key){//false
                 if(IsLeaf){
                     RemoveFromLeaf(idx);
                 }
@@ -101,8 +101,7 @@ namespace StorageLayer.Indexes
                     }
                 }
                 else{
-                    if(Children[idx].Keys.Count <= Degree){
-                        RemoveFromLeaf(idx);
+                    if(Children[idx].Keys.Count < Degree){
                         Fill(idx);
                     }
                     if(idx == Keys.Count){
@@ -115,9 +114,9 @@ namespace StorageLayer.Indexes
             }
         }
         
-        private int FindKey(int key){
+        private int FindKey(int key){//7
             int idx = 0;
-            while(idx < Keys.Count && Keys[idx] < key){
+            while(idx < Keys.Count && Keys[idx] < key){//1 < 3 11<7 true
                 idx++;
             }
             return idx;
@@ -196,14 +195,13 @@ namespace StorageLayer.Indexes
             BTreeNode child = Children[idx];
             BTreeNode sibling = Children[idx + 1];
 
-            child.Keys.Add(Keys[idx]);
-
             if(!child.IsLeaf){
                 child.Children.Add(sibling.Children[0]);
                 sibling.Children.RemoveAt(0);
             }
 
             Keys[idx] = sibling.Keys[0];
+            child.Keys.Add(Keys[idx]);
             sibling.Keys.RemoveAt(0);
         }
 
