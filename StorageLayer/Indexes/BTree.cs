@@ -42,27 +42,32 @@ namespace StorageLayer.Indexes
             return Root.Search(key);
         }
 
-        public List<int> RangeQuery(int min, int max){
-            List<int> result = new List<int>();
-            RangeQueyHelper(Root, min, max, result);
+        public List<int> RangeQuery(int min, int max){//min = 5, max = 20
+            List<int> result = new List<int>();//[]
+            RangeQueyHelper(Root, min, max, result);//root = [6 10 14 19], min = 5, max = 20, result = []
             return result;
         }
 
-        public void RangeQueyHelper(BTreeNode node, int min, int max, List<int> result){
+        private void RangeQueyHelper(BTreeNode node, int min, int max, List<int> result){
             int i = 0;
-            while (i < node.Keys.Count && min > node.Keys[i]){
+            while (i < node.Keys.Count && node.Keys[i] < min){
                 i++;
             }
             if (i < node.Keys.Count){
+                while (i < node.Keys.Count && node.Keys[i] <= max){
+                    if (node.IsLeaf){
+                        result.Add(node.Keys[i]);
+                    }
+                    else{
+                        RangeQueyHelper(node.Children[i], min, max, result);
+                    }
+                    i++;
+                }
                 if (!node.IsLeaf){
                     RangeQueyHelper(node.Children[i], min, max, result);
                 }
-                if (node.Keys[i] >= min && node.Keys[i] <= max){
-                    result.Add(node.Keys[i]);
-                }
-                i++;
             }
-            if (i < node.Keys.Count){
+            else{
                 if (!node.IsLeaf){
                     RangeQueyHelper(node.Children[i], min, max, result);
                 }

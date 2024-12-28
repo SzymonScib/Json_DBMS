@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SZBD.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+36d7efaf56c6b1b65548bf58500c6ce71f5f0da9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+87ecc37fe89ca6b98ea1b2be4b4b31198a52bc8d")]
 [assembly: System.Reflection.AssemblyProductAttribute("SZBD.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SZBD.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

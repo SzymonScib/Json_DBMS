@@ -110,12 +110,13 @@ namespace SZBD.Tests
 
         [Fact]
         private void RangeQuery_ReturnsCorrectKeys(){
-            int degree = 3;
-            BTree btree = new BTree(degree);
+            BTree btree = CreateBTree(3);
 
-            int[] keysToinsert = {10, 20, 5, 6, 12, 30, 7, 17, 19, 11, 2, 8, 1, 14, 32, 13, 25, 28};
-            foreach (var key in keysToinsert){
-                btree.Insert(key);
+            List<int> result = btree.RangeQuery(5, 20);//
+            List<int> expected = new List<int>{5, 6, 7, 8, 10, 11, 12, 13, 14, 17, 19};
+            
+            for (int i = 0; i < result.Count - 1 ; i++){
+                Assert.Equal(expected[i], result[i]);
             }
         }
 
