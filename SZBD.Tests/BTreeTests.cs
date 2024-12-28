@@ -109,6 +109,30 @@ namespace SZBD.Tests
         }
 
         [Fact]
+        public void RangeQuery_EmptyTree_ReturnsEmptyList(){
+            int degree = 3;
+            BTree btree = new BTree(degree);
+
+            List<int> result = btree.RangeQuery(1, 10);
+
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void RangeQuery_NoKeysInRange_ReturnsEmptyList(){
+            int degree = 3;
+            BTree btree = new BTree(degree);
+            int[] keysToInsert = { 10, 20, 5, 6, 12, 30, 7, 17 };
+            foreach (var key in keysToInsert){
+                btree.Insert(key);
+            }
+
+            List<int> result = btree.RangeQuery(21, 29);
+
+            Assert.Empty(result);
+        }
+
+        [Fact]
         private void RangeQuery_ReturnsCorrectKeys(){
             BTree btree = CreateBTree(3);
 
@@ -119,6 +143,7 @@ namespace SZBD.Tests
                 Assert.Equal(expected[i], result[i]);
             }
         }
+
 
         private BTree CreateBTree(int degree){
             BTree btree = new BTree(degree);
