@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace StorageLayer.Indexes
 {
@@ -42,9 +44,9 @@ namespace StorageLayer.Indexes
             return Root.Search(key);
         }
 
-        public List<int> RangeQuery(int min, int max){//min = 5, max = 20
-            List<int> result = new List<int>();//[]
-            RangeQueyHelper(Root, min, max, result);//root = [6 10 14 19], min = 5, max = 20, result = []
+        public List<int> RangeQuery(int min, int max){
+            List<int> result = new List<int>();
+            RangeQueyHelper(Root, min, max, result);
             return result;
         }
 
@@ -72,6 +74,14 @@ namespace StorageLayer.Indexes
                     RangeQueyHelper(node.Children[i], min, max, result);
                 }
             }
+        }
+
+        public string Serialize(){
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        public static BTree Deserialize(string json){
+            return JsonConvert.DeserializeObject<BTree>(json);
         }
     }
 }

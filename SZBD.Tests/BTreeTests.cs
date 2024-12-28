@@ -144,6 +144,17 @@ namespace SZBD.Tests
             }
         }
 
+        [Fact]
+        private void Serialize_Deserialize_BTree_ShouldBeEqual(){
+            BTree btree = CreateBTree(3);
+
+            string serializedBTree = btree.Serialize();
+            BTree deserializedBTree = BTree.Deserialize(serializedBTree);
+
+            Assert.Equal(btree.Root.Keys, deserializedBTree.Root.Keys);
+            Assert.Equal(btree.Root.Children.Count, deserializedBTree.Root.Children.Count);
+        }
+
 
         private BTree CreateBTree(int degree){
             BTree btree = new BTree(degree);
