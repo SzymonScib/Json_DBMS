@@ -221,5 +221,15 @@ namespace StorageLayer.Indexes
                 }
             }
         }
+
+        public void GetAllLeafKeysHelper(List<int> leafKeys){
+            if (IsLeaf){
+                leafKeys.AddRange(Keys);
+            } else {
+                foreach (var child in Children){
+                    child.GetAllLeafKeysHelper(leafKeys);
+                }
+            }
+        }
     }
 }

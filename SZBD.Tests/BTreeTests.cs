@@ -145,6 +145,18 @@ namespace SZBD.Tests
         }
 
         [Fact]
+        private void TestGetAllLeafKeys(){
+            BTree btree = CreateBTree(3);
+
+            List<int> result = btree.GetAllLeafKeys();
+            List<int> expected = new List<int>{1, 2, 5, 6, 7, 8, 10, 11, 12, 13, 14, 17, 19, 20, 25, 28, 30, 32};
+
+            for (int i = 0; i < result.Count - 1 ; i++){
+                Assert.Equal(expected[i], result[i]);
+            }
+        }
+
+        [Fact]
         private void Serialize_Deserialize_BTree_ShouldBeEqual(){
             BTree btree = CreateBTree(3);
 

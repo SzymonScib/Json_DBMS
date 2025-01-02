@@ -4,6 +4,7 @@ using Xunit;
 using System.Data.Common;
 using Newtonsoft.Json.Linq;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using StorageLayer.Indexes;
 
 namespace SZBD.Tests;
 
@@ -115,6 +116,27 @@ public class JsonStorageLayerTests
  
         Assert.Empty(results);  
     }
+
+    [Fact]
+    private void CreateIndexTest(){
+        var storageLayer = new JsonStorageLayer(_testStoragePath);
+        string tableName = "TestIndexTable";
+        MakeTestTable(tableName);
+
+        storageLayer.CreateIndex(tableName, "Id");
+        Assert.True(storageLayer.ListIndexes().Contains(tableName));
+
+        BTree btree = storageLayer.GetIndex(tableName, "Id");
+        Assert.NotNull(btree);
+
+        List<int> leafKeys = btree.GetAllLeafKeys();
+        List<int> expectedLeafKeys = new List<int> { 1, 2, 3, 4, 5 };
+        
+        for(int i = 0; i < expectedLeafKeys.Count; i++){
+            Assert.Equal(expectedLeafKeys[i], leafKeys[i]);
+        }   
+    }
+
     void MakeTestTable(string tableName){
         var storageLayer = new JsonStorageLayer(_testStoragePath);
         var columns = new List<Column>{

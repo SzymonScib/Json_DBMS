@@ -76,6 +76,15 @@ namespace StorageLayer.Indexes
             }
         }
 
+        public List<int> GetAllLeafKeys(){
+            List<int> result = new List<int>();
+            if(Root != null){
+               Root.GetAllLeafKeysHelper(result); 
+            }
+            return result;
+        }
+
+
         public string Serialize(){
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
