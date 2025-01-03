@@ -15,12 +15,8 @@ namespace StorageLayer
     {
 
         private readonly string _storagePath;
-        private readonly Dictionary<string, BTree> _indexes;
-
         public JsonStorageLayer(string storagePath){
             _storagePath = storagePath;
-            _indexes = new Dictionary<string, BTree>();
-
 
              if (!Directory.Exists(_storagePath)){
                 Directory.CreateDirectory(_storagePath);  
@@ -42,6 +38,7 @@ namespace StorageLayer
 
             string jsonTableDefinition = JsonConvert.SerializeObject(tableDefinition, Formatting.Indented);
             File.WriteAllText(filePath, jsonTableDefinition);
+
         }
 
         public void Insert(string tableName, object row){
@@ -55,6 +52,8 @@ namespace StorageLayer
 
             tableData.Add(jsonRow);  
             Utils.WriteDataToFile(filePath, tableData);
+
+            UpdateIndexes(tableName, jsonRow, true);
         }
 
         public JObject Read(string tableName, int id){
@@ -88,12 +87,18 @@ namespace StorageLayer
 
             JArray tableData = Utils.ReadDataFromFile(filePath);
             if(id >= 0 && id < tableData.Count){
+                JObject oldRow = (JObject)tableData[id];
                 tableData[id] = jsonNewRow;
                 Utils.WriteDataToFile(filePath, tableData);
+
+                UpdateIndexes(tableName, oldRow, false);
+                UpdateIndexes(tableName, jsonNewRow, true);
             }
             else{
                 throw new ArgumentOutOfRangeException("Wrong idex, use integers only");
             }
+
+
         }
 
         public void Delete(string tableName, int id){
@@ -101,8 +106,14 @@ namespace StorageLayer
 
             JArray tableData = Utils.ReadDataFromFile(filePath);
             if(id >= 0 && id < tableData.Count){
+                JObject row = (JObject)tableData[id];
                 tableData.RemoveAt(id);
-                Utils.WriteDataToFile(filePath, tableData);                
+                Utils.WriteDataToFile(filePath, tableData);
+
+                UpdateIndexes(tableName, row, false);          
+            }
+            else {
+                throw new ArgumentOutOfRangeException("Wrong index, use integers only");
             }
         }
 
@@ -110,13 +121,10 @@ namespace StorageLayer
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
             JArray tableData = Utils.ReadDataFromFile(filePath);
 
-            BTree btree = new BTree(3);
+            BTree btree = new BTree(10);
             for (int i = 0; i < tableData.Count; i++){
                 JObject row = (JObject)tableData[i];
 
-                /*if (!row.ContainsKey(columnName)){
-                    throw new InvalidOperationException($"Column {columnName} does not exist in table {tableName}");
-                }*/
                 if(row.TryGetValue(columnName, out var value)){
                     if(!value.Type.Equals(JTokenType.Integer)){
                         throw new InvalidOperationException($"Value {value} is not of type int. Indexing only supports int values.");
@@ -125,7 +133,6 @@ namespace StorageLayer
                     btree.Insert(key);
                 }
             }
-            _indexes[tableName] = btree;
 
             string indexFilePath = Path.Combine(_storagePath, $"{tableName}_{columnName}_index.json");
             string json = btree.Serialize();
@@ -133,29 +140,48 @@ namespace StorageLayer
         }
 
         public BTree GetIndex(string tableName, string columnName){
-            if (_indexes.TryGetValue(tableName, out BTree btree)){
-                return btree;
+            string indexFilePath = Path.Combine(_storagePath, $"{tableName}_{columnName}_index.json");
+            if (File.Exists(indexFilePath)){
+                string json = File.ReadAllText(indexFilePath);
+                return BTree.Deserialize(json);
             }
             else{
-                string indexFilePath = Path.Combine(_storagePath, $"{tableName}_{columnName}_index.json");
-                if (File.Exists(indexFilePath)){
-                    string json = File.ReadAllText(indexFilePath);
-                    btree = BTree.Deserialize(json);
-                    _indexes[tableName] = btree;
-                    return btree;
-                }
-                throw new InvalidOperationException($"Index for table {tableName} and column {columnName} does not exist.");
+                throw new InvalidOperationException($"Index for {columnName} in {tableName} does not exist.");
             }
         }
 
         public void DropIndex(string tableName){
-            if (_indexes.ContainsKey(tableName)){
-                _indexes.Remove(tableName);
+            string indexFilePath = Path.Combine(_storagePath, $"{tableName}_Id_index.json");
+            if (File.Exists(indexFilePath)){
+                File.Delete(indexFilePath);
+            }
+            else{
+                throw new InvalidOperationException($"Index for {tableName} does not exist.");
             }
         }
 
         public List<string> ListIndexes(){
-            return _indexes.Keys.ToList();
+            var indexFiles = Directory.GetFiles(_storagePath, "*_index.json");
+            return indexFiles.Select(Path.GetFileNameWithoutExtension).ToList();
+        }
+
+        private void UpdateIndexes(string tableName, JObject row, bool isInsert){
+            foreach (var property in row.Properties()){
+                string columnName = property.Name;
+                string indexFilePath = Path.Combine(_storagePath, $"{tableName}_{columnName}_index.json");
+                if (File.Exists(indexFilePath)){
+                    BTree btree = GetIndex(tableName, columnName);
+                    if (row.TryGetValue(columnName, out var value) && value.Type == JTokenType.Integer){
+                        if (isInsert){
+                            btree.Insert((int)value);
+                        } else {
+                            btree.Delete((int)value);
+                        }
+                        string json = btree.Serialize();
+                        File.WriteAllText(indexFilePath, json);
+                    }
+                }
+            }
         }     
     }
 }

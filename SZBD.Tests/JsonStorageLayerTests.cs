@@ -67,6 +67,16 @@ public class JsonStorageLayerTests
 
         Assert.NotNull(result);
         Assert.Equal("RightHand123", result["Username"]);
+
+        BTree btree = storageLayer.GetIndex(tableName, "Id");
+        Assert.NotNull(btree);
+
+        List<int> leafKeys = btree.GetAllLeafKeys();
+        List<int> expectedLeafKeys = new List<int> { 1, 2, 3, 4, 5 };
+
+        for(int i = 0; i < expectedLeafKeys.Count; i++){
+            Assert.Equal(expectedLeafKeys[i], leafKeys[i]);
+        }
     }
 
     [Fact]
@@ -75,10 +85,20 @@ public class JsonStorageLayerTests
         string tableName = "TestDeleteTable";
         MakeTestTable(tableName);
 
-        storageLayer.Delete(tableName, 2);
+        storageLayer.Delete(tableName, 2);//
 
         var result = storageLayer.Query(tableName, row => (string)row["Id"] == "2");       
         Assert.Empty(result);
+
+        BTree btree = storageLayer.GetIndex(tableName, "Id");
+        Assert.NotNull(btree);
+
+        List<int> leafKeys = btree.GetAllLeafKeys();
+        List<int> expectedLeafKeys = new List<int> { 1, 3, 4, 5 };
+
+        for(int i = 0; i < expectedLeafKeys.Count; i++){
+            Assert.Equal(expectedLeafKeys[i], leafKeys[i]);
+        }
     }
 
     [Fact]
@@ -91,6 +111,16 @@ public class JsonStorageLayerTests
 
         Assert.NotEmpty(result);
         Assert.Equal(6, result.Count());
+
+        BTree btree = storageLayer.GetIndex(tableName, "Id");
+        Assert.NotNull(btree);
+
+        List<int> leafKeys = btree.GetAllLeafKeys();
+        List<int> expectedLeafKeys = new List<int> { 1, 2, 3, 4, 5 };
+
+        for(int i = 0; i < expectedLeafKeys.Count; i++){
+            Assert.Equal(expectedLeafKeys[i], leafKeys[i]);
+        }
     }
 
     [Fact]
@@ -123,15 +153,18 @@ public class JsonStorageLayerTests
         string tableName = "TestIndexTable";
         MakeTestTable(tableName);
 
-        storageLayer.CreateIndex(tableName, "Id");
-        Assert.True(storageLayer.ListIndexes().Contains(tableName));
+        string tableFilePath = Path.Combine(_testStoragePath, $"{tableName}.json");
+        Assert.True(File.Exists(tableFilePath), $"Table file {tableFilePath} does not exist.");
+
+        string indexFilePath = Path.Combine(_testStoragePath, $"{tableName}_Id_index.json");
+        Assert.True(File.Exists(indexFilePath), $"Index file {indexFilePath} does not exist.");
 
         BTree btree = storageLayer.GetIndex(tableName, "Id");
         Assert.NotNull(btree);
 
         List<int> leafKeys = btree.GetAllLeafKeys();
         List<int> expectedLeafKeys = new List<int> { 1, 2, 3, 4, 5 };
-        
+
         for(int i = 0; i < expectedLeafKeys.Count; i++){
             Assert.Equal(expectedLeafKeys[i], leafKeys[i]);
         }   
@@ -150,6 +183,8 @@ public class JsonStorageLayerTests
             File.Delete(filePath);
         }
         storageLayer.CreateTable(tableName, columns);
+        //storageLayer.CreateIndex(tableName, "Id");
+
 
         var row = new {Id = 1, First_Name = "Kisuke", Last_Name = "Urahara", Username = "Ilikepizza"};
         var row1 = new {Id = 2, First_Name = "Yoruichi", Last_Name = "Shihoin", Username = "BlackCat"};
@@ -162,5 +197,6 @@ public class JsonStorageLayerTests
         storageLayer.Insert(tableName, row2);
         storageLayer.Insert(tableName, row3);
         storageLayer.Insert(tableName, row4);
+        storageLayer.CreateIndex(tableName, "Id");
     }
 }
