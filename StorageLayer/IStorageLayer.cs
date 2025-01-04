@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using StorageLayer.Indexes;
 
 namespace StorageLayer
 {
@@ -15,6 +16,10 @@ namespace StorageLayer
         JArray ReadAll(string tableName);
         void Update(string tableName, int id, object newRow);
         void Delete(string tableName, int id);
+        void CreateIndex(string tableName, string columnName);
+        BTree GetIndex(string tableName, string columnName);
+        void DropIndex(string tableName);
+        List<string> ListIndexes();
     }
     public class Column
     {
