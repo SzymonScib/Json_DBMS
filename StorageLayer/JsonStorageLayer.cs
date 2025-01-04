@@ -57,16 +57,21 @@ namespace StorageLayer
         }
 
         public JObject Read(string tableName, int id){
-            string filePath = Path.Combine(_storagePath, $"{tableName}.json");
-
-            JArray tableData = Utils.ReadDataFromFile(filePath);
-
-            if(id >= 0 && id < tableData.Count){
-                 JObject item =  (JObject)tableData[id];
-                 return item;
+            string indexFilePath = Path.Combine(_storagePath, $"{tableName}_Id_index.json");
+            if (File.Exists(indexFilePath)){
+                BTree btree = GetIndex(tableName, "Id");
+                BTreeNode? node = btree.Search(id);
+                if (node != null){
+                    string filePath = Path.Combine(_storagePath, $"{tableName}.json");
+                    JArray tableData = Utils.ReadDataFromFile(filePath);
+                    foreach (var row in tableData){
+                        if (row["Id"] != null && (int)row["Id"] == id){
+                            return (JObject)row;
+                        }
+                    }
+                }
             }
-            else
-                return new JObject();
+            return new JObject();
         }
 
         public JArray ReadAll(string tableName){
@@ -75,9 +80,31 @@ namespace StorageLayer
         }
 
         public IEnumerable<JObject> Query(string tableName, Func<JObject, bool> predicate){
-            JArray tableData = ReadAll(tableName);
-            var results =  tableData.OfType<JObject>().Where(predicate);
-            return results;
+            string filePath = Path.Combine(_storagePath, $"{tableName}.json");
+            JArray tableData = Utils.ReadDataFromFile(filePath);
+
+            var predicateBody = predicate.Method.GetMethodBody();
+            if (predicateBody != null){
+                foreach (var localVar in predicateBody.LocalVariables){
+                    string columnName = localVar.LocalType.Name;
+                    string indexFilePath = Path.Combine(_storagePath, $"{tableName}_{columnName}_index.json");
+                    if (File.Exists(indexFilePath)){
+                        BTree btree = GetIndex(tableName, columnName);
+                        List<int> keys = btree.GetAllLeafKeys();
+                        var results = new List<JObject>();
+                        foreach (var key in keys){
+                            foreach (var row in tableData){
+                                if ((int)row[columnName] == key && predicate((JObject)row)){
+                                    results.Add((JObject)row);
+                                }
+                            }
+                        }
+                        return results;
+                    }
+                }
+            }
+
+            return tableData.OfType<JObject>().Where(predicate);
         }
 
         public void Update(string tableName, int id, object newRow){

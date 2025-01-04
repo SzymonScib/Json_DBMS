@@ -138,6 +138,20 @@ public class JsonStorageLayerTests
     }
 
     [Fact]
+    public void QueryIdTest(){
+        var storageLayer = new JsonStorageLayer(_testStoragePath);
+        MakeTestTable("TestQueryIdTable");
+
+        var results = storageLayer.Query("TestQueryIdTable", row => row["Id"] != null && (int)row["Id"] == 4);
+
+        Assert.NotNull(results); 
+        Assert.Single(results);  
+        Assert.Equal("Ichigo", results.First()["First_Name"]); 
+        Assert.Equal("Kurosaki", results.First()["Last_Name"]); 
+        Assert.Equal("Bankai", results.First()["Username"]);
+    }
+
+    [Fact]
      public void QueryNoMatchTest(){
         var storageLayer = new JsonStorageLayer(_testStoragePath);
         MakeTestTable("TestQueryNoMatch");
