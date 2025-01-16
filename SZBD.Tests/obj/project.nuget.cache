@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "7H38jEISbRQ=",
+  "dgSpecHash": "/4pz0t85/+M=",
   "success": true,
   "projectFilePath": "F:\\SZBD\\SZBD.Tests\\SZBD.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\48664\\.nuget\\packages\\coverlet.collector\\6.0.0\\coverlet.collector.6.0.0.nupkg.sha512",
+    "C:\\Users\\48664\\.nuget\\packages\\irony\\1.2.0\\irony.1.2.0.nupkg.sha512",
     "C:\\Users\\48664\\.nuget\\packages\\microsoft.codecoverage\\17.8.0\\microsoft.codecoverage.17.8.0.nupkg.sha512",
     "C:\\Users\\48664\\.nuget\\packages\\microsoft.net.test.sdk\\17.8.0\\microsoft.net.test.sdk.17.8.0.nupkg.sha512",
     "C:\\Users\\48664\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
@@ -94,5 +95,16 @@
     "C:\\Users\\48664\\.nuget\\packages\\xunit.extensibility.execution\\2.5.3\\xunit.extensibility.execution.2.5.3.nupkg.sha512",
     "C:\\Users\\48664\\.nuget\\packages\\xunit.runner.visualstudio\\2.5.3\\xunit.runner.visualstudio.2.5.3.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "QueryEngine depends on Irony (>= 1.1.11) but Irony 1.1.11 was not found. An approximate best match of Irony 1.2.0 was resolved.",
+      "libraryId": "Irony",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
 }

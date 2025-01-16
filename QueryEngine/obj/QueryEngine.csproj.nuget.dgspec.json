@@ -48,6 +48,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Irony": {
+              "target": "Package",
+              "version": "[1.1.11, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
