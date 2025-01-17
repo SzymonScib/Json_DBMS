@@ -27,7 +27,7 @@ namespace QueryEngine
             var asOpt = new NonTerminal("asOpt");
             var columnSource = new NonTerminal("columnSource");
             var intoClauseOpt = new NonTerminal("intoClauseOpt");
-            var fromClauseOpt = new NonTerminal("fromClauseOpt");
+            var fromClause = new NonTerminal("fromClause");
             var whereClauseOpt = new NonTerminal("whereClauseOpt");
             var idlist = new NonTerminal("idlist");
 
@@ -45,7 +45,7 @@ namespace QueryEngine
             asOpt.Rule = Empty | "AS";
             columnSource.Rule = Id;
             intoClauseOpt.Rule = Empty | "INTO" + Id;
-            fromClauseOpt.Rule = Empty | "FROM" + idlist;
+            fromClause.Rule = "FROM" + idlist;
             idlist.Rule = MakePlusRule(idlist, comma, Id);
             whereClauseOpt.Rule = Empty | "WHERE" + expression;
 
@@ -64,11 +64,11 @@ namespace QueryEngine
             parExpr.Rule = "(" + expression + ")";
             unExpr.Rule = ToTerm("-") + expression | ToTerm("NOT") + expression;
 
-            selectStmt.Rule = "SELECT" + selRestrOpt + selList + fromClauseOpt + whereClauseOpt;
+            selectStmt.Rule = "SELECT" + selRestrOpt + selList + fromClause + whereClauseOpt;
 
             Root = selectStmt;
 
-            MarkPunctuation("SELECT", "FROM", "WHERE", "INSERT INTO", "VALUES", "UPDATE", "SET", "DELETE FROM", "CREATE INDEX", "ON", "(", ")", ",", "AS", "INTO");
+            MarkPunctuation("SELECT", "FROM", "WHERE", "INTO", "AS", "(", ")", ",");
             RegisterBracePair("(", ")");
             MarkTransient(selRestrOpt, aliasOpt, asOpt, columnSource);
         }

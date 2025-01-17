@@ -197,8 +197,6 @@ public class JsonStorageLayerTests
             File.Delete(filePath);
         }
         storageLayer.CreateTable(tableName, columns);
-        //storageLayer.CreateIndex(tableName, "Id");
-
 
         var row = new {Id = 1, First_Name = "Kisuke", Last_Name = "Urahara", Username = "Ilikepizza"};
         var row1 = new {Id = 2, First_Name = "Yoruichi", Last_Name = "Shihoin", Username = "BlackCat"};
