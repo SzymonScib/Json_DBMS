@@ -79,6 +79,46 @@ namespace StorageLayer
             return Utils.ReadDataFromFile(filePath);
         }
 
+        public JArray ReadColumns(string tableName, List<string> columns){
+            string filePath = Path.Combine(_storagePath, $"{tableName}.json");
+            JArray tableData = Utils.ReadDataFromFile(filePath);
+
+            var filteredData = new JArray(
+                tableData.OfType<JObject>().Select(row =>
+                {
+                    var filteredRow = new JObject();
+                    foreach (var column in columns){
+                        if (row.ContainsKey(column)){
+                            filteredRow[column] = row[column];
+                        }
+                    }
+                    return filteredRow;
+                }).Where(row => row.HasValues)
+            );
+
+            return filteredData;
+        }
+
+        public JArray QueryColumns(string tableName, List<string> columns, Func<JObject, bool> predicate){
+            string filePath = Path.Combine(_storagePath, $"{tableName}.json");
+            JArray tableData = Utils.ReadDataFromFile(filePath);
+
+            var filteredData = new JArray(
+                tableData.OfType<JObject>().Where(predicate).Select(row =>
+                {
+                    var filteredRow = new JObject();
+                    foreach (var column in columns){
+                        if (row.ContainsKey(column)){
+                            filteredRow[column] = row[column];
+                        }
+                    }
+                    return filteredRow;
+                }).Where(row => row.HasValues)
+            );
+
+            return filteredData;
+        }
+
         public IEnumerable<JObject> Query(string tableName, Func<JObject, bool> predicate){
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");
             JArray tableData = Utils.ReadDataFromFile(filePath);

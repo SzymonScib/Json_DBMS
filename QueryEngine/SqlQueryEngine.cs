@@ -50,18 +50,28 @@ namespace QueryEngine
             var whereClauseOpt = root.ChildNodes.Count > 2 ? root.ChildNodes[2] : null;
 
             var tableName = fromClause.ChildNodes[0].FindTokenAndGetText();
-            var columns = selList.Term.Name == "*" ? null : selList.ChildNodes.Select(node => node.FindTokenAndGetText()).ToList();
+            var columns = selList.ChildNodes[0].Term.Name == "*" ? null : selList.ChildNodes[0].ChildNodes.Select(node => node.FindTokenAndGetText()).ToList();
             var whereExpression = whereClauseOpt != null && whereClauseOpt.ChildNodes.Count >= 1 ? whereClauseOpt.ChildNodes[0].ChildNodes[0] : null;
 
             JArray results;
 
             if (whereExpression != null){
-                results = new JArray(_storageLayer.Query(tableName, row => EvaluateExpression(row, whereExpression)));
-                
+                if(columns != null){
+                    results = _storageLayer.QueryColumns(tableName, columns ,row => EvaluateExpression(row, whereExpression));
+                }
+                else{
+                    results = new JArray(_storageLayer.Query(tableName, row => EvaluateExpression(row, whereExpression)));
+                }
             }
             else{
-                results = _storageLayer.ReadAll(tableName);
+                if(columns != null){
+                    results = _storageLayer.ReadColumns(tableName, columns);
+                }
+                else{
+                    results = _storageLayer.ReadAll(tableName);
+                }
             }
+
 
             var dataOnly = new JArray();
             foreach (var result in results){

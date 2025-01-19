@@ -124,6 +124,22 @@ public class JsonStorageLayerTests
     }
 
     [Fact]
+    public void ReadColumsTest(){
+        var storageLayer = new JsonStorageLayer(_testStoragePath);
+        string tableName = "TestReadColumnsTable";
+        MakeTestTable(tableName);
+
+        var result = storageLayer.ReadColumns(tableName, new List<string> { "First_Name", "Username" });
+
+        Assert.NotEmpty(result);
+        Assert.Equal(5, result.Count());
+        Assert.Equal("Kisuke", result[0]["First_Name"]);
+        Assert.Equal("Ilikepizza", result[0]["Username"]);
+        Assert.Equal("Yourichi", result[1]["First_Name"]);
+        Assert.Equal("BlackCat", result[1]["Username"]);
+    }
+
+    [Fact]
     public void QueryTest(){
         var storageLayer = new JsonStorageLayer(_testStoragePath);
         MakeTestTable("TestQueryTable");
@@ -134,6 +150,19 @@ public class JsonStorageLayerTests
         Assert.Single(results);  
         Assert.Equal("Ichigo", results.First()["First_Name"]); 
         Assert.Equal("Kurosaki", results.First()["Last_Name"]); 
+        Assert.Equal("Bankai", results.First()["Username"]);
+    }
+
+    [Fact]
+    public void QueryColumnsTest(){
+        var storageLayer = new JsonStorageLayer(_testStoragePath);
+        MakeTestTable("TestQueryColumnsTable");
+
+        var results = storageLayer.QueryColumns("TestQueryColumnsTable", new List<string> { "First_Name", "Username" }, row => (string)row["First_Name"] == "Ichigo");
+
+        Assert.NotNull(results); 
+        Assert.Single(results);  
+        Assert.Equal("Ichigo", results.First()["First_Name"]); 
         Assert.Equal("Bankai", results.First()["Username"]);
     }
 
