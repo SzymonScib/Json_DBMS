@@ -40,8 +40,9 @@ namespace QueryEngine
                 case "selectStmt":
                     return JsonConvert.SerializeObject(ExecuteSelect(root), Formatting.None);
                 case "createTableStmt":
-                    ExcecuteCreateTable(root);
-                    return "Table created";
+                    return  ExcecuteCreateTable(root);
+                case "insertStmt":
+                    return ExcecuteInsert(root);
                 default:
                     return "Unknown command: " + command;
             }
@@ -87,7 +88,7 @@ namespace QueryEngine
             return dataOnly;
         }
 
-        private void ExcecuteCreateTable(ParseTreeNode root){
+        private string ExcecuteCreateTable(ParseTreeNode root){
             var tableName = root.ChildNodes[1].FindTokenAndGetText();
             var columnDefs = root.ChildNodes[2].ChildNodes;
 
@@ -110,6 +111,21 @@ namespace QueryEngine
             }
 
             _storageLayer.CreateTable(tableName, columns);
+            return $"Table {tableName} created";
+        }
+
+        public string ExcecuteInsert(ParseTreeNode root){
+            var tableName = root.ChildNodes[1].FindTokenAndGetText();
+            var columnNames = root.ChildNodes[2].ChildNodes.Select(node => node.FindTokenAndGetText()).ToList();
+            var values = root.ChildNodes[4].ChildNodes.Select(node => node.FindTokenAndGetText()).ToList();
+
+            var row = new JObject();
+            for (var i = 0; i < columnNames.Count; i++){
+                row[columnNames[i]] = JToken.Parse(values[i]);
+            }
+
+            _storageLayer.Insert(tableName, row);
+            return $"Row inserted into {tableName}";
         }
 
 

@@ -15,10 +15,8 @@ namespace SZBD.Tests
     {
         private readonly string _testStoragePath = Path.Combine(Directory.GetCurrentDirectory(), "TestStorage");
 
-        public QueryEngineTests()
-        {
-            if (Directory.Exists(_testStoragePath))
-            {
+        public QueryEngineTests(){
+            if (Directory.Exists(_testStoragePath)){
                 Directory.Delete(_testStoragePath, true);
             }
             Directory.CreateDirectory(_testStoragePath);
@@ -110,17 +108,17 @@ namespace SZBD.Tests
         public void TestCreateTable(){
             var queryEngine = new SqlQueryEngine(_testStoragePath);
 
-            var query = "CREATETABLE testCreateTableQ (Id INT PRIMARY KEY UNIQUE, First_Name STRING, Last_Name STRING, Username STRING UNIQUE)";
+            var query = "CREATETABLE testCreateTable (Id INT PRIMARY KEY UNIQUE, First_Name STRING, Last_Name STRING, Username STRING UNIQUE)";
 
-            string filePath = Path.Combine(_testStoragePath, $"testCreateTableQ.json");
+            string filePath = Path.Combine(_testStoragePath, $"testCreateTable.json");
                 if(File.Exists(filePath)){
                 File.Delete(filePath);
             }
 
             var result = queryEngine.ExecuteQuery(query);
 
-            Assert.Equal("Table created", result);
-            Assert.True(File.Exists(Path.Combine(_testStoragePath, "testCreateTableQ.json")));
+            Assert.Equal("Table testCreateTable created", result);
+            Assert.True(File.Exists(Path.Combine(_testStoragePath, "testCreateTable.json")));
 
             var tableDefinition = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(filePath));
             var columns = tableDefinition["Columns"].ToObject<List<Column>>();
@@ -154,6 +152,31 @@ namespace SZBD.Tests
             Assert.False(usernameColumn.PrimaryKey);
             Assert.True(usernameColumn.Unique);
             Assert.False(usernameColumn.AllowNull);
+        }
+
+        [Fact]
+        public void TestInsertQuery(){
+            var queryEngine = new SqlQueryEngine(_testStoragePath);
+
+            var createTableQuery = "CREATETABLE testInsertTable (Id INT PRIMARY KEY, First_Name STRING, Last_Name STRING, Username STRING UNIQUE)";
+            queryEngine.ExecuteQuery(createTableQuery);
+
+            var insertQuery = "INSERTINTO testInsertTable (Id, First_Name, Last_Name, Username) VALUES (1, 'Kisuke', 'Urahara', 'Ilikepizza')";
+            var result = queryEngine.ExecuteQuery(insertQuery);
+
+            Assert.Equal("Row inserted into testInsertTable", result);
+
+            var selectQuery = "SELECT * FROM testInsertTable";
+            var selectResult = queryEngine.ExecuteQuery(selectQuery);
+
+            var expectedOutput = new JArray
+            {
+                new JObject { { "Id", 1 }, { "First_Name", "Kisuke" }, { "Last_Name", "Urahara" }, { "Username", "Ilikepizza" } }
+            };
+
+            string expectedResult = JsonConvert.SerializeObject(expectedOutput, Formatting.None); 
+
+            Assert.Equal(expectedResult, selectResult);
         }
 
 
