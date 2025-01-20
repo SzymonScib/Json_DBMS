@@ -13,7 +13,7 @@ namespace SZBD.Tests
 {
     public class QueryEngineTests
     {
-        private readonly string _testStoragePath = "test_storage";
+        private readonly string _testStoragePath = Path.Combine(Directory.GetCurrentDirectory(), "TestStorage");
 
         public QueryEngineTests()
         {
@@ -104,6 +104,56 @@ namespace SZBD.Tests
             string expectedResult = JsonConvert.SerializeObject(expectedOutput, Formatting.None); 
 
             Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void TestCreateTable(){
+            var queryEngine = new SqlQueryEngine(_testStoragePath);
+
+            var query = "CREATETABLE testCreateTableQ (Id INT PRIMARY KEY UNIQUE, First_Name STRING, Last_Name STRING, Username STRING UNIQUE)";
+
+            string filePath = Path.Combine(_testStoragePath, $"testCreateTableQ.json");
+                if(File.Exists(filePath)){
+                File.Delete(filePath);
+            }
+
+            var result = queryEngine.ExecuteQuery(query);
+
+            Assert.Equal("Table created", result);
+            Assert.True(File.Exists(Path.Combine(_testStoragePath, "testCreateTableQ.json")));
+
+            var tableDefinition = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(filePath));
+            var columns = tableDefinition["Columns"].ToObject<List<Column>>();
+
+            Assert.Equal(4, columns.Count);
+
+            var idColumn = columns.FirstOrDefault(c => c.Name == "Id");
+            Assert.NotNull(idColumn);
+            Assert.Equal("INT", idColumn.Type);
+            Assert.True(idColumn.PrimaryKey);
+            Assert.True(idColumn.Unique);
+            Assert.False(idColumn.AllowNull);
+
+            var firstNameColumn = columns.FirstOrDefault(c => c.Name == "First_Name");
+            Assert.NotNull(firstNameColumn);
+            Assert.Equal("STRING", firstNameColumn.Type);
+            Assert.False(firstNameColumn.PrimaryKey);
+            Assert.False(firstNameColumn.Unique);
+            Assert.False(firstNameColumn.AllowNull);
+
+            var lastNameColumn = columns.FirstOrDefault(c => c.Name == "Last_Name");
+            Assert.NotNull(lastNameColumn);
+            Assert.Equal("STRING", lastNameColumn.Type);
+            Assert.False(lastNameColumn.PrimaryKey);
+            Assert.False(lastNameColumn.Unique);
+            Assert.False(lastNameColumn.AllowNull);
+
+            var usernameColumn = columns.FirstOrDefault(c => c.Name == "Username");
+            Assert.NotNull(usernameColumn);
+            Assert.Equal("STRING", usernameColumn.Type);
+            Assert.False(usernameColumn.PrimaryKey);
+            Assert.True(usernameColumn.Unique);
+            Assert.False(usernameColumn.AllowNull);
         }
 
 

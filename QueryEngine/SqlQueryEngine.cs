@@ -2,6 +2,7 @@
 using StorageLayer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Runtime.CompilerServices;
 
 namespace QueryEngine
 {
@@ -17,18 +18,18 @@ namespace QueryEngine
             _parser = new Parser(grammar);
         }
 
-        public string ExecuteQuery(string query)
-        {
+        public string ExecuteQuery(string query){
             var parseTree = _parser.Parse(query);
 
-            if (parseTree.HasErrors())
-            {
-                return "Error parsing query:";
+            if (parseTree.HasErrors()){
+                var errorMessages = parseTree.ParserMessages.Select(message => message.Message).ToList();
+                var errorMessage = "Error parsing query: " + string.Join("; ", errorMessages);
+                Console.WriteLine(errorMessage);
+                return errorMessage;
             }
 
-            var root = parseTree.Root;
-            if (root == null)
-            {
+            var root = parseTree.Root.ChildNodes[0];
+            if (root == null){
                 return "No parse tree root found";
             }
 
@@ -38,6 +39,9 @@ namespace QueryEngine
             {
                 case "selectStmt":
                     return JsonConvert.SerializeObject(ExecuteSelect(root), Formatting.None);
+                case "createTableStmt":
+                    ExcecuteCreateTable(root);
+                    return "Table created";
                 default:
                     return "Unknown command: " + command;
             }
@@ -72,7 +76,6 @@ namespace QueryEngine
                 }
             }
 
-
             var dataOnly = new JArray();
             foreach (var result in results){
                 if (result is JObject obj && obj.ContainsKey("TableName")){
@@ -83,6 +86,33 @@ namespace QueryEngine
 
             return dataOnly;
         }
+
+        private void ExcecuteCreateTable(ParseTreeNode root){
+            var tableName = root.ChildNodes[1].FindTokenAndGetText();
+            var columnDefs = root.ChildNodes[2].ChildNodes;
+
+            var columns = new List<Column>();
+
+            foreach (var columnDef in columnDefs){
+                var columnName = columnDef.ChildNodes[0].FindTokenAndGetText();
+                var dataType = columnDef.ChildNodes[1].FindTokenAndGetText();
+
+                var primaryKey = columnDef.ChildNodes[2].ChildNodes.Any(node => node.FindTokenAndGetText() == "PRIMARY KEY");
+                var unique = columnDef.ChildNodes[2].ChildNodes.Any(node => node.FindTokenAndGetText() == "UNIQUE");
+                var allowNull = columnDef.ChildNodes[2].ChildNodes.Any(node => node.FindTokenAndGetText() == "NULL") && 
+                        !columnDef.ChildNodes[2].ChildNodes.Any(node => node.FindTokenAndGetText() == "NOT NULL");
+                columns.Add(new Column {
+                     Name = columnName, 
+                     Type = dataType, 
+                     PrimaryKey = primaryKey,
+                     Unique = unique,
+                     AllowNull = allowNull});
+            }
+
+            _storageLayer.CreateTable(tableName, columns);
+        }
+
+
 
         private bool EvaluateExpression(JToken row, ParseTreeNode expression){
             switch (expression.Term.Name){
@@ -112,16 +142,13 @@ namespace QueryEngine
                     }
 
                 case "term":
-                    // Handle term expressions (e.g., identifiers, numbers, string literals)
                     var termValue = expression.FindTokenAndGetText();
                     return row.ToString() == termValue;
 
                 case "parExpr":
-                    // Handle parenthesized expressions
                     return EvaluateExpression(row, expression.ChildNodes[1]);
 
                 case "unExpr":
-                    // Handle unary expressions (e.g., NOT)
                     var unaryOp = expression.ChildNodes[0].FindTokenAndGetText();
                     var unaryExpr = expression.ChildNodes[1];
                     var unaryResult = EvaluateExpression(row, unaryExpr);

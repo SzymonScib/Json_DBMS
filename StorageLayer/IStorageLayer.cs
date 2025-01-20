@@ -14,6 +14,8 @@ namespace StorageLayer
         void Insert(string tableName, object row);
         JObject Read(string tableName, int id);
         JArray ReadAll(string tableName);
+        JArray ReadColumns(string tableName, List<string> columns);
+        JArray QueryColumns(string tableName, List<string> columns, Func<JObject, bool> predicate);
         void Update(string tableName, int id, object newRow);
         void Delete(string tableName, int id);
         void CreateIndex(string tableName, string columnName);
