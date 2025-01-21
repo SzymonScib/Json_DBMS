@@ -23,6 +23,9 @@ namespace QueryEngine
             var selectStmt = new NonTerminal("selectStmt");
             var insertStmt = new NonTerminal("insertStmt");
             var createTableStmt = new NonTerminal("createTableStmt");
+            var updateStmt = new NonTerminal("updateStmt");
+            var deleteStmt = new NonTerminal("deleteStmt");
+            var dropTableStmt = new NonTerminal("dropTableStmt");
 
             var selRestrOpt = new NonTerminal("selRestrOpt");
             var selList = new NonTerminal("selList");
@@ -53,6 +56,9 @@ namespace QueryEngine
             var primaryKeyOpt = new NonTerminal("primaryKeyOpt");
             var uniqueOpt = new NonTerminal("uniqueOpt");
             var allowNullOpt = new NonTerminal("allowNullOpt");
+
+            var updateItem = new NonTerminal("updateItem");
+            var updateItemList = new NonTerminal("updateItemList");
 
             selRestrOpt.Rule = Empty | "DISTINCT";
             selList.Rule = columnItemList | "*";
@@ -93,16 +99,22 @@ namespace QueryEngine
             columnDef.Rule = Id + dataType + columnAttributes;
             dataType.Rule = ToTerm("INT") | ToTerm("FLOAT") | ToTerm("BOOL") | ToTerm("DATETIME") | ToTerm("STRING");
 
+            updateItem.Rule = Id + "=" + valueItem;
+            updateItemList.Rule = MakePlusRule(updateItemList, comma, updateItem);
+
             selectStmt.Rule = "SELECT" + selRestrOpt + selList + fromClause + whereClauseOpt;
             insertStmt.Rule = "INSERT" + "INTO" + Id + "(" + idlist + ")" + "VALUES" + "(" + valueList + ")";
             createTableStmt.Rule = "CREATE" + "TABLE" + Id + "(" + columnDefList + ")";
+            updateStmt.Rule = "UPDATE" + Id + "SET" + updateItemList + whereClauseOpt;
+            deleteStmt.Rule = "DELETE" + "FROM" + Id + whereClauseOpt;
+            dropTableStmt.Rule = "DROP" + "TABLE" + Id;
 
             var root = new NonTerminal("root");
-            root.Rule = createTableStmt | selectStmt | insertStmt;
+            root.Rule = createTableStmt | selectStmt | insertStmt | updateStmt | deleteStmt | dropTableStmt;
 
             Root = root;
 
-            MarkPunctuation("SELECT", "FROM", "WHERE", "INTO", "AS", "(", ")", ",");
+            MarkPunctuation("SELECT", "FROM", "SET", "WHERE", "INTO", "AS", "(", ")", ",");
             RegisterBracePair("(", ")");
             MarkTransient(selRestrOpt, aliasOpt, asOpt, columnSource);
         }

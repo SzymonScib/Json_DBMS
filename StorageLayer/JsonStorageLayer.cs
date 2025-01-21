@@ -153,16 +153,18 @@ namespace StorageLayer
             JObject jsonNewRow = JsonConvert.DeserializeObject<JObject>(stringNewRow);
 
             JArray tableData = Utils.ReadDataFromFile(filePath);
-            if(id >= 0 && id < tableData.Count){
-                JObject oldRow = (JObject)tableData[id];
-                tableData[id] = jsonNewRow;
+            var rowToUpdate = tableData.OfType<JObject>().FirstOrDefault(row => row["Id"] != null && (int)row["Id"] == id);
+            if (rowToUpdate != null){
+                var index = tableData.IndexOf(rowToUpdate);
+                JObject oldRow = (JObject)tableData[index];
+                tableData[index] = jsonNewRow;
                 Utils.WriteDataToFile(filePath, tableData);
 
                 UpdateIndexes(tableName, oldRow, false);
                 UpdateIndexes(tableName, jsonNewRow, true);
             }
             else{
-                throw new ArgumentOutOfRangeException("Wrong idex, use integers only");
+                throw new ArgumentOutOfRangeException("Row with specified Id not found");
             }
 
 
@@ -183,6 +185,20 @@ namespace StorageLayer
                 throw new ArgumentOutOfRangeException("Wrong index, use integers only");
             }
         }
+
+        public void DropTable(string tableName){
+            string filePath = Path.Combine(_storagePath, $"{tableName}.json");
+            if (File.Exists(filePath)){
+                File.Delete(filePath);
+            } else {
+                throw new InvalidOperationException($"Table {tableName} does not exist.");
+            }
+
+            var indexFiles = Directory.GetFiles(_storagePath, $"{tableName}_*_index.json");
+            foreach (var indexFile in indexFiles){
+                File.Delete(indexFile);
+            }
+        } 
 
         public void CreateIndex(string tableName, string columnName){
             string filePath = Path.Combine(_storagePath, $"{tableName}.json");

@@ -43,6 +43,12 @@ namespace QueryEngine
                     return  ExcecuteCreateTable(root);
                 case "insertStmt":
                     return ExcecuteInsert(root);
+                case "deleteStmt":
+                    return ExcecuteDelete(root);
+                case "dropTableStmt":
+                    return ExecuteDropTable(root);
+                case "updateStmt":
+                    return ExcecuteUpdate(root);
                 default:
                     return "Unknown command: " + command;
             }
@@ -126,6 +132,60 @@ namespace QueryEngine
 
             _storageLayer.Insert(tableName, row);
             return $"Row inserted into {tableName}";
+        }
+
+        public string ExcecuteDelete(ParseTreeNode root){
+            var tableName = root.ChildNodes[1].FindTokenAndGetText();
+            var whereClauseOpt = root.ChildNodes.Count > 2 ? root.ChildNodes[2] : null;
+            var whereExpression = whereClauseOpt != null && whereClauseOpt.ChildNodes.Count >= 1 ? whereClauseOpt.ChildNodes[0].ChildNodes[0] : null;
+
+            if (whereExpression != null){
+                var rowsToDelete = _storageLayer.Query(tableName, row => EvaluateExpression(row, whereExpression)).ToList();
+                foreach (var row in rowsToDelete){
+                    var id = (int)row["Id"];
+                    _storageLayer.Delete(tableName, id);
+                }
+                return $"Rows deleted from {tableName}";
+            }
+            else{
+                return "No where clause found";
+            }
+        }
+
+        public string ExecuteDropTable(ParseTreeNode root){
+            var tableName = root.ChildNodes[1].FindTokenAndGetText();
+            _storageLayer.DropTable(tableName);
+            return $"Table {tableName} dropped";
+        }
+
+        public string ExcecuteUpdate(ParseTreeNode root){
+            var tableName = root.ChildNodes[1].FindTokenAndGetText();
+            var columnItemList = root.ChildNodes[2].ChildNodes;
+            var whereClauseOpt = root.ChildNodes.Count > 3 ? root.ChildNodes[3] : null;
+            var whereExpression = whereClauseOpt != null && whereClauseOpt.ChildNodes.Count >= 1 ? whereClauseOpt.ChildNodes[0].ChildNodes[0] : null;
+
+            if (whereExpression != null){
+                var rowsToUpdate = _storageLayer.Query(tableName, row => EvaluateExpression(row, whereExpression)).ToList();
+                if (rowsToUpdate.Count == 0){
+                    return "No rows found to update";
+                }
+                
+                 foreach (var row in rowsToUpdate){
+                    var id = (int)row["Id"];
+                    var updatedRow = new JObject(row);
+
+                    foreach (var columnItem in columnItemList){
+                        var columnName = columnItem.ChildNodes[0].FindTokenAndGetText();
+                        var value = columnItem.ChildNodes[2].FindTokenAndGetText();
+                        updatedRow[columnName] = JToken.Parse(value);
+                    }
+
+                    _storageLayer.Update(tableName, id, updatedRow);
+                }
+                return $"Rows updated in {tableName}";
+            }else{
+                return "No where clause found";
+            }
         }
 
 

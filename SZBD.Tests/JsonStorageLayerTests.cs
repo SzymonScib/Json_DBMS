@@ -102,6 +102,21 @@ public class JsonStorageLayerTests
     }
 
     [Fact]
+    public void DropTableTest(){
+        var storageLayer = new JsonStorageLayer(_testStoragePath);
+        string tableName = "TestDropTable";
+        MakeTestTable(tableName);
+
+        storageLayer.DropTable(tableName);
+
+        string filePath = Path.Combine(_testStoragePath, $"{tableName}.json");
+        Assert.False(File.Exists(filePath), $"Table file {filePath} should be deleted.");
+
+        var indexFiles = Directory.GetFiles(_testStoragePath, $"{tableName}_*_index.json");
+        Assert.Empty(indexFiles);
+    }
+
+    [Fact]
     public void ReadAllTest(){
         var storageLayer = new JsonStorageLayer(_testStoragePath);
         string tableName = "TestRadAllTable";

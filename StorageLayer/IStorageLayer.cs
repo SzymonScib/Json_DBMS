@@ -18,6 +18,7 @@ namespace StorageLayer
         JArray QueryColumns(string tableName, List<string> columns, Func<JObject, bool> predicate);
         void Update(string tableName, int id, object newRow);
         void Delete(string tableName, int id);
+        void DropTable(string tableName);
         void CreateIndex(string tableName, string columnName);
         BTree GetIndex(string tableName, string columnName);
         void DropIndex(string tableName);

@@ -179,6 +179,69 @@ namespace SZBD.Tests
             Assert.Equal(expectedResult, selectResult);
         }
 
+        [Fact]
+        public void TestDeleteQuery(){
+            var queryEngine = new SqlQueryEngine(_testStoragePath);
+
+            MakeTestTable("testDeleteTable");
+
+            var deleteQuery = "DELETEFROM testDeleteTable WHERE Id = 1";
+            var deleteResult = queryEngine.ExecuteQuery(deleteQuery);
+
+            var selectQuery = "SELECT * FROM testDeleteTable";
+            var selectResult = queryEngine.ExecuteQuery(selectQuery);
+
+            var expectedOutput = new JArray
+            {
+                new JObject { { "Id", 2 }, { "First_Name", "Yoruichi" }, { "Last_Name", "Shihoin" }, { "Username", "BlackCat" } },
+                new JObject { { "Id", 3 }, { "First_Name", "Jushiro" }, { "Last_Name", "Ukitake" }, { "Username", "MimihagiSama" } },
+                new JObject { { "Id", 4 }, { "First_Name", "Ichigo" }, { "Last_Name", "Kurosaki" }, { "Username", "Bankai" } },
+                new JObject { { "Id", 5 }, { "First_Name", "Shunsui" }, { "Last_Name", "Kyoraku" }, { "Username", "HeadCaptain123" } }
+            };
+
+            string expectedResult = JsonConvert.SerializeObject(expectedOutput, Formatting.None);
+
+            Assert.Equal(deleteResult, "Rows deleted from testDeleteTable");
+            Assert.Equal(expectedResult, selectResult);
+        }
+
+        [Fact]
+        public void TestDropTable(){
+            var queryEngine = new SqlQueryEngine(_testStoragePath);
+
+            MakeTestTable("testDropTable");
+
+            var dropTableQuery = "DROPTABLE testDropTable";
+            var dropResult = queryEngine.ExecuteQuery(dropTableQuery);
+
+            Assert.Equal("Table testDropTable dropped", dropResult);
+            Assert.False(File.Exists(Path.Combine(_testStoragePath, "testDropTable.json")));
+        }
+
+        [Fact]
+        public void TestUpdateQuery(){
+            var queryEngine = new SqlQueryEngine(_testStoragePath);
+
+            MakeTestTable("testUpdateTable");
+
+            var updateQuery = "UPDATE testUpdateTable SET First_Name = 'UpdatedName' WHERE Id = 1";
+            var updateResult = queryEngine.ExecuteQuery(updateQuery);
+
+            Assert.Equal("Rows updated in testUpdateTable", updateResult);
+
+            var selectQuery = "SELECT * FROM testUpdateTable WHERE Id = 1";
+            var selectResult = queryEngine.ExecuteQuery(selectQuery);
+
+            var expectedOutput = new JArray
+            {
+                new JObject { { "Id", 1 }, { "First_Name", "UpdatedName" }, { "Last_Name", "Urahara" }, { "Username", "Ilikepizza" } }
+            };
+
+            string expectedResult = JsonConvert.SerializeObject(expectedOutput, Formatting.None);
+
+            Assert.Equal(expectedResult, selectResult);
+        }
+
 
         void MakeTestTable(string tableName){
             var storageLayer = new JsonStorageLayer(_testStoragePath);
