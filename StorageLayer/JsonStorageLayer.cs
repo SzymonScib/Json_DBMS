@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 using Microsoft.VisualBasic;
@@ -265,6 +266,26 @@ namespace StorageLayer
                     }
                 }
             }
-        }     
+        }
+
+        public List<Column> GetTableDefinition(string tableName){
+            string filePath = Path.Combine(_storagePath, $"{tableName}.json");
+            if (!File.Exists(filePath)){
+                throw new InvalidOperationException($"Table {tableName} does not exist.");
+            }
+
+            string jsonTableDefinition = File.ReadAllText(filePath);
+            var tableDefinition = JsonConvert.DeserializeObject<JArray>(jsonTableDefinition);
+            var columns = tableDefinition[0]["Columns"].ToObject<List<Column>>();
+            return columns;
+        }
+
+        public bool ValidateTableName(string tableName){
+            string filePath = Path.Combine(_storagePath, $"{tableName}.json");
+            if (!File.Exists(filePath)){
+                return false;
+            }
+            return true;
+        }
     }
 }

@@ -61,7 +61,15 @@ namespace QueryEngine
             var whereClauseOpt = root.ChildNodes.Count > 2 ? root.ChildNodes[2] : null;
 
             var tableName = fromClause.ChildNodes[0].FindTokenAndGetText();
+            if (!_storageLayer.ValidateTableName(tableName)){
+                throw new InvalidOperationException($"Table {tableName} does not exist.");
+            }
+
             var columns = selList.ChildNodes[0].Term.Name == "*" ? null : selList.ChildNodes[0].ChildNodes.Select(node => node.FindTokenAndGetText()).ToList();
+            if (columns != null){
+                ValidateColumns(tableName, columns);
+            }
+
             var whereExpression = whereClauseOpt != null && whereClauseOpt.ChildNodes.Count >= 1 ? whereClauseOpt.ChildNodes[0].ChildNodes[0] : null;
 
             JArray results;
@@ -122,7 +130,13 @@ namespace QueryEngine
 
         public string ExcecuteInsert(ParseTreeNode root){
             var tableName = root.ChildNodes[1].FindTokenAndGetText();
+            if (!_storageLayer.ValidateTableName(tableName)){
+                throw new InvalidOperationException($"Table {tableName} does not exist.");
+            }
+
             var columnNames = root.ChildNodes[2].ChildNodes.Select(node => node.FindTokenAndGetText()).ToList();
+            ValidateColumns(tableName, columnNames);
+
             var values = root.ChildNodes[4].ChildNodes.Select(node => node.FindTokenAndGetText()).ToList();
 
             var row = new JObject();
@@ -136,6 +150,10 @@ namespace QueryEngine
 
         public string ExcecuteDelete(ParseTreeNode root){
             var tableName = root.ChildNodes[1].FindTokenAndGetText();
+            if (!_storageLayer.ValidateTableName(tableName)){
+                throw new InvalidOperationException($"Table {tableName} does not exist.");
+            }
+
             var whereClauseOpt = root.ChildNodes.Count > 2 ? root.ChildNodes[2] : null;
             var whereExpression = whereClauseOpt != null && whereClauseOpt.ChildNodes.Count >= 1 ? whereClauseOpt.ChildNodes[0].ChildNodes[0] : null;
 
@@ -154,13 +172,24 @@ namespace QueryEngine
 
         public string ExecuteDropTable(ParseTreeNode root){
             var tableName = root.ChildNodes[1].FindTokenAndGetText();
+            if (!_storageLayer.ValidateTableName(tableName)){
+                throw new InvalidOperationException($"Table {tableName} does not exist.");
+            }
+
             _storageLayer.DropTable(tableName);
             return $"Table {tableName} dropped";
         }
 
         public string ExcecuteUpdate(ParseTreeNode root){
             var tableName = root.ChildNodes[1].FindTokenAndGetText();
+            if (!_storageLayer.ValidateTableName(tableName)){
+                throw new InvalidOperationException($"Table {tableName} does not exist.");
+            }
+
             var columnItemList = root.ChildNodes[2].ChildNodes;
+            var columnNames = columnItemList.Select(item => item.ChildNodes[0].FindTokenAndGetText()).ToList();
+            ValidateColumns(tableName, columnNames);
+            
             var whereClauseOpt = root.ChildNodes.Count > 3 ? root.ChildNodes[3] : null;
             var whereExpression = whereClauseOpt != null && whereClauseOpt.ChildNodes.Count >= 1 ? whereClauseOpt.ChildNodes[0].ChildNodes[0] : null;
 
@@ -232,6 +261,17 @@ namespace QueryEngine
 
                 default:
                     throw new Exception("Unsupported expression type: " + expression.Term.Name);
+            }
+        }
+
+        private void ValidateColumns(string tableName, List<string> columnNames){
+            var tableDefinition = _storageLayer.GetTableDefinition(tableName);
+            var validColumns = tableDefinition.Select(c => c.Name).ToList();
+
+            foreach (var columnName in columnNames){
+                if (!validColumns.Contains(columnName)){
+                    throw new InvalidOperationException($"Column {columnName} does not exist in table {tableName}.");
+                }
             }
         }
     }
