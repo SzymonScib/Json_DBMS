@@ -250,6 +250,105 @@ namespace SZBD.Tests
             Assert.Equal(expectedResult, selectResult);
         }
 
+        [Fact]
+        public void TestSelectQueryWhereNotEquals(){
+            MakeTestTable("testSelectTable");
+            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+
+            var query = "SELECT * FROM testSelectTable WHERE Id <> 1";
+            var result = queryEngine.ExecuteQuery(query);
+
+            var expectedOutput = new JArray
+            {
+                new JObject { { "Id", 2 }, { "First_Name", "Yoruichi" }, { "Last_Name", "Shihoin" }, { "Username", "BlackCat" } },
+                new JObject { { "Id", 3 }, { "First_Name", "Jushiro" }, { "Last_Name", "Ukitake" }, { "Username", "MimihagiSama" } },
+                new JObject { { "Id", 4 }, { "First_Name", "Ichigo" }, { "Last_Name", "Kurosaki" }, { "Username", "Bankai" } },
+                new JObject { { "Id", 5 }, { "First_Name", "Shunsui" }, { "Last_Name", "Kyoraku" }, { "Username", "HeadCaptain123" } }
+            };
+
+            string expectedResult = JsonConvert.SerializeObject(expectedOutput, Formatting.None); 
+
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void TestSelectQueryWhereLessThan(){
+            MakeTestTable("testSelectTable");
+            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+
+            var query = "SELECT * FROM testSelectTable WHERE Id < 3";
+            var result = queryEngine.ExecuteQuery(query);
+
+            var expectedOutput = new JArray
+            {
+                new JObject { { "Id", 1 }, { "First_Name", "Kisuke" }, { "Last_Name", "Urahara" }, { "Username", "Ilikepizza" } },
+                new JObject { { "Id", 2 }, { "First_Name", "Yoruichi" }, { "Last_Name", "Shihoin" }, { "Username", "BlackCat" } }
+            };
+
+            string expectedResult = JsonConvert.SerializeObject(expectedOutput, Formatting.None); 
+
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void TestSelectQueryWhereGreaterThan(){
+            MakeTestTable("testSelectTable");
+            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+
+            var query = "SELECT * FROM testSelectTable WHERE Id > 3";
+            var result = queryEngine.ExecuteQuery(query);
+
+            var expectedOutput = new JArray
+            {
+                new JObject { { "Id", 4 }, { "First_Name", "Ichigo" }, { "Last_Name", "Kurosaki" }, { "Username", "Bankai" } },
+                new JObject { { "Id", 5 }, { "First_Name", "Shunsui" }, { "Last_Name", "Kyoraku" }, { "Username", "HeadCaptain123" } }
+            };
+
+            string expectedResult = JsonConvert.SerializeObject(expectedOutput, Formatting.None); 
+
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void TestSelectQueryWhereLessThanOrEqual(){
+            MakeTestTable("testSelectTable");
+            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+
+            var query = "SELECT * FROM testSelectTable WHERE Id <= 3";
+            var result = queryEngine.ExecuteQuery(query);
+
+            var expectedOutput = new JArray
+            {
+                new JObject { { "Id", 1 }, { "First_Name", "Kisuke" }, { "Last_Name", "Urahara" }, { "Username", "Ilikepizza" } },
+                new JObject { { "Id", 2 }, { "First_Name", "Yoruichi" }, { "Last_Name", "Shihoin" }, { "Username", "BlackCat" } },
+                new JObject { { "Id", 3 }, { "First_Name", "Jushiro" }, { "Last_Name", "Ukitake" }, { "Username", "MimihagiSama" } }
+            };
+
+            string expectedResult = JsonConvert.SerializeObject(expectedOutput, Formatting.None); 
+
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Fact]
+        public void TestSelectQueryWhereGreaterThanOrEqual(){
+            MakeTestTable("testSelectTable");
+            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+
+            var query = "SELECT * FROM testSelectTable WHERE Id >= 3";
+            var result = queryEngine.ExecuteQuery(query);
+
+            var expectedOutput = new JArray
+            {
+                new JObject { { "Id", 3 }, { "First_Name", "Jushiro" }, { "Last_Name", "Ukitake" }, { "Username", "MimihagiSama" } },
+                new JObject { { "Id", 4 }, { "First_Name", "Ichigo" }, { "Last_Name", "Kurosaki" }, { "Username", "Bankai" } },
+                new JObject { { "Id", 5 }, { "First_Name", "Shunsui" }, { "Last_Name", "Kyoraku" }, { "Username", "HeadCaptain123" } }
+            };
+
+            string expectedResult = JsonConvert.SerializeObject(expectedOutput, Formatting.None); 
+
+            Assert.Equal(expectedResult, result);
+        }
+
 
         void MakeTestTable(string tableName){
             var storageLayer = new JsonStorageLayer(_testStoragePath);

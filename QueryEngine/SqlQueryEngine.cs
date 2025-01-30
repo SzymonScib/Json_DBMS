@@ -255,20 +255,20 @@ namespace QueryEngine
                     var op = expression.ChildNodes[1].FindTokenAndGetText();
                     var right = expression.ChildNodes[2].FindTokenAndGetText();
 
-                    var leftValue = row[left];
-                    var rightValue = JToken.Parse(right);
+                    var leftValue = row[left] != null ? row[left].Value<int>() : 0;
+                    var rightValue = JToken.Parse(right);                   
 
                     switch (op){
                         case "=":
                             return JToken.DeepEquals(leftValue, rightValue);
                         case "<":
-                            return leftValue.Value<int>() < rightValue.Value<int>();
+                            return leftValue < rightValue.Value<int>();
                         case ">":
-                            return leftValue.Value<int>() > rightValue.Value<int>();
+                            return leftValue > rightValue.Value<int>();
                         case "<=":
-                            return leftValue.Value<int>() <= rightValue.Value<int>();
+                            return leftValue <= rightValue.Value<int>();
                         case ">=":
-                            return leftValue.Value<int>() >= rightValue.Value<int>();
+                            return leftValue >= rightValue.Value<int>();
                         case "<>":
                             return !JToken.DeepEquals(leftValue, rightValue);
                         default:
