@@ -1,26 +1,22 @@
 {
   "version": 2,
-  "dgSpecHash": "NPwpw7kZq0s=",
+  "dgSpecHash": "Vv9nhno/SHA=",
   "success": true,
   "projectFilePath": "F:\\SZBD\\QueryEngine\\QueryEngine.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\48664\\.nuget\\packages\\irony\\1.2.0\\irony.1.2.0.nupkg.sha512",
     "C:\\Users\\48664\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
-    "C:\\Users\\48664\\.nuget\\packages\\serilog\\4.2.0\\serilog.4.2.0.nupkg.sha512",
-    "C:\\Users\\48664\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\8.0.8\\microsoft.netcore.app.runtime.win-x64.8.0.8.nupkg.sha512",
-    "C:\\Users\\48664\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\8.0.8\\microsoft.windowsdesktop.app.runtime.win-x64.8.0.8.nupkg.sha512",
-    "C:\\Users\\48664\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\8.0.8\\microsoft.aspnetcore.app.runtime.win-x64.8.0.8.nupkg.sha512"
+    "C:\\Users\\48664\\.nuget\\packages\\serilog\\4.2.0\\serilog.4.2.0.nupkg.sha512"
   ],
   "logs": [
     {
       "code": "NU1603",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Element QueryEngine zależy od elementu Irony (>= 1.1.11), ale nie znaleziono elementu Irony 1.1.11. Najlepsze rozpoznane przybliżone dopasowanie to Irony 1.2.0.",
+      "message": "QueryEngine depends on Irony (>= 1.1.11) but Irony 1.1.11 was not found. An approximate best match of Irony 1.2.0 was resolved.",
       "libraryId": "Irony",
       "targetGraphs": [
-        "net8.0",
-        "net8.0/win-x64"
+        "net8.0"
       ]
     }
   ]
