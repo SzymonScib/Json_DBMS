@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Irony" Version="1.1.11" />
+    <PackageReference Include="Serilog" Version="4.2.0" />
   </ItemGroup>
 
   <PropertyGroup>

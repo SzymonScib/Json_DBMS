@@ -3,6 +3,7 @@ using StorageLayer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Runtime.CompilerServices;
+using Serilog;
 
 namespace QueryEngine
 {
@@ -11,11 +12,13 @@ namespace QueryEngine
     {
         private readonly JsonStorageLayer _storageLayer;
         private readonly Parser _parser;
+        private readonly ILogger _logger;
 
-        public SqlQueryEngine(string storagePath){
+        public SqlQueryEngine(string storagePath, ILogger logger){
             _storageLayer = new JsonStorageLayer(storagePath);
             var grammar = new SimpleSqlGrammar();
             _parser = new Parser(grammar);
+            _logger = logger;
         }
 
         public string ExecuteQuery(string query){
@@ -24,33 +27,43 @@ namespace QueryEngine
             if (parseTree.HasErrors()){
                 var errorMessages = parseTree.ParserMessages.Select(message => message.Message).ToList();
                 var errorMessage = "Error parsing query: " + string.Join("; ", errorMessages);
-                Console.WriteLine(errorMessage);
+                _logger.Error(errorMessage);
                 return errorMessage;
             }
 
             var root = parseTree.Root.ChildNodes[0];
             if (root == null){
-                return "No parse tree root found";
+                var errorMessage = "No parse tree root found";
+                _logger.Error(errorMessage);
+                return errorMessage;
             }
 
 
             var command = root.Term.Name;
-            switch (command)
-            {
-                case "selectStmt":
-                    return JsonConvert.SerializeObject(ExecuteSelect(root), Formatting.None);
-                case "createTableStmt":
-                    return  ExcecuteCreateTable(root);
-                case "insertStmt":
-                    return ExcecuteInsert(root);
-                case "deleteStmt":
-                    return ExcecuteDelete(root);
-                case "dropTableStmt":
-                    return ExecuteDropTable(root);
-                case "updateStmt":
-                    return ExcecuteUpdate(root);
-                default:
-                    return "Unknown command: " + command;
+            try {
+                switch (command)
+                {
+                    case "selectStmt":
+                        return JsonConvert.SerializeObject(ExecuteSelect(root), Formatting.None);
+                    case "createTableStmt":
+                        return  ExcecuteCreateTable(root);
+                    case "insertStmt":
+                        return ExcecuteInsert(root);
+                    case "deleteStmt":
+                        return ExcecuteDelete(root);
+                    case "dropTableStmt":
+                        return ExecuteDropTable(root);
+                    case "updateStmt":
+                        return ExcecuteUpdate(root);
+                    default:
+                        var errorMessage = "Unknown command: " + command;
+                        _logger.Error(errorMessage);
+                        return errorMessage;
+                }
+            }catch(Exception ex){
+                var errorMessage = "Error executing command: " + ex.Message;
+                _logger.Error(errorMessage);
+                return errorMessage;
             }
         }
 
@@ -98,6 +111,8 @@ namespace QueryEngine
                 }
                 dataOnly.Add(result);
             }
+            var message = "Select executed";
+            _logger.Information(message);
 
             return dataOnly;
         }
@@ -125,7 +140,9 @@ namespace QueryEngine
             }
 
             _storageLayer.CreateTable(tableName, columns);
-            return $"Table {tableName} created";
+            var message = $"Table {tableName} created";
+            _logger.Information(message);
+            return message;
         }
 
         public string ExcecuteInsert(ParseTreeNode root){
@@ -135,8 +152,6 @@ namespace QueryEngine
             }
 
             var columnNames = root.ChildNodes[2].ChildNodes.Select(node => node.FindTokenAndGetText()).ToList();
-            ValidateColumns(tableName, columnNames);
-
             var values = root.ChildNodes[4].ChildNodes.Select(node => node.FindTokenAndGetText()).ToList();
 
             var row = new JObject();
@@ -145,7 +160,9 @@ namespace QueryEngine
             }
 
             _storageLayer.Insert(tableName, row);
-            return $"Row inserted into {tableName}";
+            var message = $"Row inserted into {tableName}";
+            _logger.Information(message);
+            return message;
         }
 
         public string ExcecuteDelete(ParseTreeNode root){
@@ -163,10 +180,14 @@ namespace QueryEngine
                     var id = (int)row["Id"];
                     _storageLayer.Delete(tableName, id);
                 }
-                return $"Rows deleted from {tableName}";
+                var message = $"Rows deleted from {tableName}";
+                _logger.Information(message);
+                return message;
             }
             else{
-                return "No where clause found";
+                var message = "No where clause found";
+                _logger.Information(message);
+                return message;
             }
         }
 
@@ -177,7 +198,9 @@ namespace QueryEngine
             }
 
             _storageLayer.DropTable(tableName);
-            return $"Table {tableName} dropped";
+            var message = $"Table {tableName} dropped";
+            _logger.Information(message);
+            return message;
         }
 
         public string ExcecuteUpdate(ParseTreeNode root){
@@ -196,7 +219,9 @@ namespace QueryEngine
             if (whereExpression != null){
                 var rowsToUpdate = _storageLayer.Query(tableName, row => EvaluateExpression(row, whereExpression)).ToList();
                 if (rowsToUpdate.Count == 0){
-                    return "No rows found to update";
+                    var message1 = "No rows found to update";
+                    _logger.Information(message1);
+                    return message1;
                 }
                 
                  foreach (var row in rowsToUpdate){
@@ -211,9 +236,13 @@ namespace QueryEngine
 
                     _storageLayer.Update(tableName, id, updatedRow);
                 }
-                return $"Rows updated in {tableName}";
+                var message = $"Rows updated in {tableName}";
+                _logger.Information(message);
+                return message;
             }else{
-                return "No where clause found";
+                var message = "No where clause found";
+                _logger.Information(message);
+                return message;
             }
         }
 
@@ -270,6 +299,8 @@ namespace QueryEngine
 
             foreach (var columnName in columnNames){
                 if (!validColumns.Contains(columnName)){
+                    var errorMessage = $"Column {columnName} does not exist in table {tableName}.";
+                    _logger.Error(errorMessage);
                     throw new InvalidOperationException($"Column {columnName} does not exist in table {tableName}.");
                 }
             }

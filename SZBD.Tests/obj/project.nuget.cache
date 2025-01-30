@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "/4pz0t85/+M=",
+  "dgSpecHash": "CMb8K7lyVsQ=",
   "success": true,
   "projectFilePath": "F:\\SZBD\\SZBD.Tests\\SZBD.Tests.csproj",
   "expectedPackageFiles": [
@@ -32,6 +32,8 @@
     "C:\\Users\\48664\\.nuget\\packages\\runtime.ubuntu.14.04-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.ubuntu.14.04-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\48664\\.nuget\\packages\\runtime.ubuntu.16.04-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.ubuntu.16.04-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\48664\\.nuget\\packages\\runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
+    "C:\\Users\\48664\\.nuget\\packages\\serilog\\4.2.0\\serilog.4.2.0.nupkg.sha512",
+    "C:\\Users\\48664\\.nuget\\packages\\serilog.sinks.console\\6.0.0\\serilog.sinks.console.6.0.0.nupkg.sha512",
     "C:\\Users\\48664\\.nuget\\packages\\system.appcontext\\4.3.0\\system.appcontext.4.3.0.nupkg.sha512",
     "C:\\Users\\48664\\.nuget\\packages\\system.buffers\\4.3.0\\system.buffers.4.3.0.nupkg.sha512",
     "C:\\Users\\48664\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
@@ -100,7 +102,7 @@
       "code": "NU1603",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "QueryEngine depends on Irony (>= 1.1.11) but Irony 1.1.11 was not found. An approximate best match of Irony 1.2.0 was resolved.",
+      "message": "Element QueryEngine zależy od elementu Irony (>= 1.1.11), ale nie znaleziono elementu Irony 1.1.11. Najlepsze rozpoznane przybliżone dopasowanie to Irony 1.2.0.",
       "libraryId": "Irony",
       "targetGraphs": [
         "net8.0"

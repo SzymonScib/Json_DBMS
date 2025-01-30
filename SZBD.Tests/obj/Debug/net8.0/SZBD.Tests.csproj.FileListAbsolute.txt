@@ -104,3 +104,5 @@ F:\SZBD\SZBD.Tests\obj\Debug\net8.0\SZBD.Tests.pdb
 F:\SZBD\SZBD.Tests\obj\Debug\net8.0\SZBD.Tests.genruntimeconfig.cache
 F:\SZBD\SZBD.Tests\obj\Debug\net8.0\ref\SZBD.Tests.dll
 F:\SZBD\SZBD.Tests\bin\Debug\net8.0\Irony.dll
+F:\SZBD\SZBD.Tests\bin\Debug\net8.0\Serilog.dll
+F:\SZBD\SZBD.Tests\bin\Debug\net8.0\Serilog.Sinks.Console.dll

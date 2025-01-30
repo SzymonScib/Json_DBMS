@@ -1,18 +1,20 @@
 {
   "version": 2,
-  "dgSpecHash": "Rcr1Ez92XWg=",
+  "dgSpecHash": "ZL0cCXvGLX4=",
   "success": true,
   "projectFilePath": "F:\\SZBD\\ClientApp\\ClientApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\48664\\.nuget\\packages\\irony\\1.2.0\\irony.1.2.0.nupkg.sha512",
-    "C:\\Users\\48664\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+    "C:\\Users\\48664\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\48664\\.nuget\\packages\\serilog\\4.2.0\\serilog.4.2.0.nupkg.sha512",
+    "C:\\Users\\48664\\.nuget\\packages\\serilog.sinks.console\\6.0.0\\serilog.sinks.console.6.0.0.nupkg.sha512"
   ],
   "logs": [
     {
       "code": "NU1603",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "QueryEngine depends on Irony (>= 1.1.11) but Irony 1.1.11 was not found. An approximate best match of Irony 1.2.0 was resolved.",
+      "message": "Element QueryEngine zależy od elementu Irony (>= 1.1.11), ale nie znaleziono elementu Irony 1.1.11. Najlepsze rozpoznane przybliżone dopasowanie to Irony 1.2.0.",
       "libraryId": "Irony",
       "targetGraphs": [
         "net8.0"
