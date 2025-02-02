@@ -145,7 +145,7 @@ namespace QueryEngine
             return message;
         }
 
-        public string ExcecuteInsert(ParseTreeNode root){
+        private string ExcecuteInsert(ParseTreeNode root){
             var tableName = root.ChildNodes[1].FindTokenAndGetText();
             if (!_storageLayer.ValidateTableName(tableName)){
                 throw new InvalidOperationException($"Table {tableName} does not exist.");
@@ -165,7 +165,7 @@ namespace QueryEngine
             return message;
         }
 
-        public string ExcecuteDelete(ParseTreeNode root){
+        private string ExcecuteDelete(ParseTreeNode root){
             var tableName = root.ChildNodes[1].FindTokenAndGetText();
             if (!_storageLayer.ValidateTableName(tableName)){
                 throw new InvalidOperationException($"Table {tableName} does not exist.");
@@ -191,7 +191,7 @@ namespace QueryEngine
             }
         }
 
-        public string ExecuteDropTable(ParseTreeNode root){
+        private string ExecuteDropTable(ParseTreeNode root){
             var tableName = root.ChildNodes[1].FindTokenAndGetText();
             if (!_storageLayer.ValidateTableName(tableName)){
                 throw new InvalidOperationException($"Table {tableName} does not exist.");
@@ -203,7 +203,7 @@ namespace QueryEngine
             return message;
         }
 
-        public string ExcecuteUpdate(ParseTreeNode root){
+        private string ExcecuteUpdate(ParseTreeNode root){
             var tableName = root.ChildNodes[1].FindTokenAndGetText();
             if (!_storageLayer.ValidateTableName(tableName)){
                 throw new InvalidOperationException($"Table {tableName} does not exist.");

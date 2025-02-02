@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "CMb8K7lyVsQ=",
+  "dgSpecHash": "zVzFewWWXUU=",
   "success": true,
   "projectFilePath": "F:\\SZBD\\SZBD.Tests\\SZBD.Tests.csproj",
   "expectedPackageFiles": [
@@ -95,14 +95,17 @@
     "C:\\Users\\48664\\.nuget\\packages\\xunit.core\\2.5.3\\xunit.core.2.5.3.nupkg.sha512",
     "C:\\Users\\48664\\.nuget\\packages\\xunit.extensibility.core\\2.5.3\\xunit.extensibility.core.2.5.3.nupkg.sha512",
     "C:\\Users\\48664\\.nuget\\packages\\xunit.extensibility.execution\\2.5.3\\xunit.extensibility.execution.2.5.3.nupkg.sha512",
-    "C:\\Users\\48664\\.nuget\\packages\\xunit.runner.visualstudio\\2.5.3\\xunit.runner.visualstudio.2.5.3.nupkg.sha512"
+    "C:\\Users\\48664\\.nuget\\packages\\xunit.runner.visualstudio\\2.5.3\\xunit.runner.visualstudio.2.5.3.nupkg.sha512",
+    "C:\\Users\\48664\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.12\\microsoft.netcore.app.ref.8.0.12.nupkg.sha512",
+    "C:\\Users\\48664\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.12\\microsoft.windowsdesktop.app.ref.8.0.12.nupkg.sha512",
+    "C:\\Users\\48664\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.12\\microsoft.aspnetcore.app.ref.8.0.12.nupkg.sha512"
   ],
   "logs": [
     {
       "code": "NU1603",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Element QueryEngine zależy od elementu Irony (>= 1.1.11), ale nie znaleziono elementu Irony 1.1.11. Najlepsze rozpoznane przybliżone dopasowanie to Irony 1.2.0.",
+      "message": "QueryEngine depends on Irony (>= 1.1.11) but Irony 1.1.11 was not found. Irony 1.2.0 was resolved instead.",
       "libraryId": "Irony",
       "targetGraphs": [
         "net8.0"
