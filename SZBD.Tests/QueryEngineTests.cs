@@ -33,7 +33,8 @@ namespace SZBD.Tests
         [Fact]
         public void TestSelectQuery(){
             MakeTestTable("testSelectTable");
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             var query = "SELECT * FROM testSelectTable";
 
@@ -56,7 +57,8 @@ namespace SZBD.Tests
         [Fact]
         public void TestSelectQueryWhere(){
             MakeTestTable("testSelectTable");
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             var query = "SELECT Id, First_Name, Last_Name, Username FROM testSelectTable WHERE Id = 1";
             var result = queryEngine.ExecuteQuery(query);
@@ -74,7 +76,8 @@ namespace SZBD.Tests
         [Fact]
         public void TestSelectQueryNotAllColumns(){
             MakeTestTable("testSelectTable");
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             var query = "SELECT Id, First_Name FROM testSelectTable";
 
@@ -97,7 +100,8 @@ namespace SZBD.Tests
         [Fact]
         public void TestSelectQueryWhereNotAllColumns(){
             MakeTestTable("testSelectTable");
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             var query = "SELECT Id, First_Name, Last_Name FROM testSelectTable WHERE Id = 1";
             var result = queryEngine.ExecuteQuery(query);
@@ -114,7 +118,8 @@ namespace SZBD.Tests
 
         [Fact]
         public void TestCreateTable(){
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             var query = "CREATETABLE testCreateTable (Id INT PRIMARY KEY UNIQUE, First_Name STRING, Last_Name STRING, Username STRING UNIQUE)";
 
@@ -164,7 +169,8 @@ namespace SZBD.Tests
 
         [Fact]
         public void TestInsertQuery(){
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             var createTableQuery = "CREATETABLE testInsertTable (Id INT PRIMARY KEY, First_Name STRING, Last_Name STRING, Username STRING UNIQUE)";
             queryEngine.ExecuteQuery(createTableQuery);
@@ -189,7 +195,8 @@ namespace SZBD.Tests
 
         [Fact]
         public void TestDeleteQuery(){
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             MakeTestTable("testDeleteTable");
 
@@ -215,7 +222,8 @@ namespace SZBD.Tests
 
         [Fact]
         public void TestDropTable(){
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             MakeTestTable("testDropTable");
 
@@ -228,7 +236,8 @@ namespace SZBD.Tests
 
         [Fact]
         public void TestUpdateQuery(){
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             MakeTestTable("testUpdateTable");
 
@@ -253,7 +262,8 @@ namespace SZBD.Tests
         [Fact]
         public void TestSelectQueryWhereNotEquals(){
             MakeTestTable("testSelectTable");
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             var query = "SELECT * FROM testSelectTable WHERE Id <> 1";
             var result = queryEngine.ExecuteQuery(query);
@@ -274,7 +284,8 @@ namespace SZBD.Tests
         [Fact]
         public void TestSelectQueryWhereLessThan(){
             MakeTestTable("testSelectTable");
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             var query = "SELECT * FROM testSelectTable WHERE Id < 3";
             var result = queryEngine.ExecuteQuery(query);
@@ -293,7 +304,8 @@ namespace SZBD.Tests
         [Fact]
         public void TestSelectQueryWhereGreaterThan(){
             MakeTestTable("testSelectTable");
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             var query = "SELECT * FROM testSelectTable WHERE Id > 3";
             var result = queryEngine.ExecuteQuery(query);
@@ -312,7 +324,8 @@ namespace SZBD.Tests
         [Fact]
         public void TestSelectQueryWhereLessThanOrEqual(){
             MakeTestTable("testSelectTable");
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             var query = "SELECT * FROM testSelectTable WHERE Id <= 3";
             var result = queryEngine.ExecuteQuery(query);
@@ -332,7 +345,8 @@ namespace SZBD.Tests
         [Fact]
         public void TestSelectQueryWhereGreaterThanOrEqual(){
             MakeTestTable("testSelectTable");
-            var queryEngine = new SqlQueryEngine(_testStoragePath, _logger);
+            var storageLayer = new JsonStorageLayer(_testStoragePath);
+            var queryEngine = new SqlQueryEngine(storageLayer, _logger);
 
             var query = "SELECT * FROM testSelectTable WHERE Id >= 3";
             var result = queryEngine.ExecuteQuery(query);

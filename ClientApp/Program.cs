@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using StorageLayer;
 using QueryEngine;
 
 namespace ClientApp
@@ -38,7 +39,7 @@ namespace ClientApp
                 Console.WriteLine($"Created storage directory at {storagePath}");
             }
 
-            var queryEngine = new SqlQueryEngine(storagePath, logger);
+            var queryEngine = new SqlQueryEngine(new JsonStorageLayer(storagePath), logger);
 
             while(true){
                 Console.Write("sql> ");

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StorageLayer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3aa706e531e1c82973e30ab24c5c322b86fcb03a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0c652fb2448d53f4ac5734ffa174b08a726e1cf6")]
 [assembly: System.Reflection.AssemblyProductAttribute("StorageLayer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StorageLayer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

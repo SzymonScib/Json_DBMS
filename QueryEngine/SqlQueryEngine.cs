@@ -10,12 +10,12 @@ namespace QueryEngine
 
     public class SqlQueryEngine
     {
-        private readonly JsonStorageLayer _storageLayer;
+        private readonly IStorageLayer _storageLayer;
         private readonly Parser _parser;
         private readonly ILogger _logger;
 
-        public SqlQueryEngine(string storagePath, ILogger logger){
-            _storageLayer = new JsonStorageLayer(storagePath);
+        public SqlQueryEngine(IStorageLayer storageLayer, ILogger logger){
+            _storageLayer = storageLayer;
             var grammar = new SimpleSqlGrammar();
             _parser = new Parser(grammar);
             _logger = logger;

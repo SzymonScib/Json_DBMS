@@ -16,6 +16,7 @@ namespace StorageLayer
         JArray ReadAll(string tableName);
         JArray ReadColumns(string tableName, List<string> columns);
         JArray QueryColumns(string tableName, List<string> columns, Func<JObject, bool> predicate);
+        IEnumerable<JObject> Query(string tableName, Func<JObject, bool> predicate);
         void Update(string tableName, int id, object newRow);
         void Delete(string tableName, int id);
         void DropTable(string tableName);
@@ -23,6 +24,9 @@ namespace StorageLayer
         BTree GetIndex(string tableName, string columnName);
         void DropIndex(string tableName);
         List<string> ListIndexes();
+        List<Column> GetTableDefinition(string tableName);
+        bool ValidateTableName(string tableName);
+
     }
     public class Column
     {
